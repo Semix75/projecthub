@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Acceuil;
 use App\Entity\Art;
 use App\Entity\Gallerie;
+use App\Entity\Projet;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -15,6 +16,9 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\AcceuilFormType;
 use App\Entity\Contenu;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\Admin\VoeuxCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use App\Entity\Voeux;
 
 
 
@@ -57,6 +61,9 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');        
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
+        yield MenuItem::linkToCrud('Voeux', 'fas fa-heart', Voeux::class);
+        yield MenuItem::linkToCrud('Projet', 'fas fa-home', Projet::class);
+
 
     }
 

@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -36,9 +38,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastname = null;
 
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Voeux::class, orphanRemoval: true)]
+    private Collection $voeux;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
+        $this->voeux = new ArrayCollection();
+
     }
     public function getId(): ?int
     {
@@ -144,6 +151,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         public function __toString(): string
         {
             return $this->firstname . " " . $this->lastname ; 
+        }
+
+
+    
+        public function getVoeux(): Collection
+        {
+            return $this->voeux;
+        }
+    
+        public function addVoeu(Voeux $voeu): static
+        {
+            if (!$this->voeux->contains($voeu)) {
+                $this->voeux->add($voeu);
+                $voeu->setUser($this);
+            }
+            return $this;
+        }
+    
+        public function removeVoeu(Voeux $voeu): static
+        {
+            if ($this->voeux->removeElement($voeu)) {
+                if ($voeu->getUser() === $this) {
+                    $voeu->setUser(null);
+                }
+            }
+            return $this;
         }
 
 }
