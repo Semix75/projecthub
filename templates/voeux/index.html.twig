@@ -1,0 +1,35 @@
+{# templates/voeux/new.html.twig #}
+
+{% block body %}
+    <h1>Choisissez vos projets</h1>
+
+    {{ form_start(form) }}
+    
+    <div>
+        {{ form_label(form.projet_1) }}
+        {{ form_widget(form.projet_1) }}
+        {{ form_errors(form.projet_1) }}
+    </div>
+    <div>
+        {{ form_label(form.priorite_1) }}
+        {{ form_widget(form.priorite_1) }}
+        {{ form_errors(form.priorite_1) }}
+    </div>
+
+    <div>
+        {{ form_label(form.projet_2) }}
+        {{ form_widget(form.projet_2) }}
+        {{ form_errors(form.projet_2) }}
+    </div>
+    <div>
+        {{ form_label(form.priorite_2) }}
+        {{ form_widget(form.priorite_2) }}
+        {{ form_errors(form.priorite_2) }}
+    </div>
+
+    {# Ajoute le même type de bloc pour les autres choix de projets #}
+
+    <button type="submit">Soumettre</button>
+    
+    {{ form_end(form) }}
+{% endblock %}

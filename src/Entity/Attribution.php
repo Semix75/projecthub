@@ -5,23 +5,21 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Voeux
+class Attribution
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "voeux")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: Projet::class, inversedBy: "voeux")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Projet::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Projet $projet = null;
 
-    #[ORM\Column(type: "integer")]
-    private ?int $priorite = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -48,16 +46,4 @@ class Voeux
         $this->projet = $projet;
         return $this;
     }
-
-
-    public function getPriorite(): ?int
-{
-    return $this->priorite;
-}
-
-public function setPriorite(int $priorite): static
-{
-    $this->priorite = $priorite;
-    return $this;
-}
 }
