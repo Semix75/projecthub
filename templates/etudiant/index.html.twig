@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Étudiant
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4 mb-5">
+		<h1 class="text-center">Choisissez vos 5 projets préférés</h1>
+		<p class="text-center">
+			<a href="{{ path('projets_index') }}">Voir la liste des projets</a>
+		</p>
+
+
+		{% if projets is empty %}
+			<p class="text-center">Aucun projet disponible.</p>
+		{% else %}
+			<form method="post" action="" class="mt-4">
+				<div class="row justify-content-center">
+					<div class="col-md-8">
+						<div class="card shadow-sm">
+							<div class="card-body">
+								<p class="text-muted">Sélectionnez vos projets préférés dans l'ordre de préférence.</p>
+
+								{% for i in 1..5 %}
+									<div class="mb-3">
+										<label for="choix{{ i }}" class="form-label">Choix
+											{{ i }}</label>
+										<select class="form-select choix-projet" name="choix{{ i }}" id="choix{{ i }}" required>
+											<option value="">-- Sélectionnez un projet --</option>
+											{% for projet in projets %}
+												<option value="{{ projet.id }}">{{ projet.intitule }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								{% endfor %}
+
+								<div class="d-grid">
+									<button type="submit" class="btn btn-primary">Envoyer mes choix</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		{% endif %}
+	</div>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+const selects = document.querySelectorAll(".choix-projet");
+
+selects.forEach(select => {
+select.addEventListener("change", function () {
+let selectedValues = new Set();
+selects.forEach(s => {
+if (s.value) 
+selectedValues.add(s.value);
+
+
+
+});
+
+selects.forEach(s => {
+[...s.options].forEach(option => {
+if (option.value && selectedValues.has(option.value) && s.value !== option.value) {
+option.disabled = true;
+} else {
+option.disabled = false;
+}
+});
+});
+});
+});
+});
+	</script>
+
+{% endblock %}
