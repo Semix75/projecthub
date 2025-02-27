@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Repository\ProjetRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class VoeuxController extends AbstractController
 {
@@ -20,8 +22,10 @@ class VoeuxController extends AbstractController
     }
 
     #[Route('/voeux', name: 'app_voeux')]
-    public function new(Request $request)
+    public function new(Request $request , ProjetRepository $p): Response
     {
+
+        $projets = $p->findAll();
         // Vérifier que l'utilisateur est connecté et possède le rôle "ROLE_USER"
         if (!$this->isGranted('ROLE_USER')) {
             throw new AccessDeniedException('Vous devez être connecté en tant qu\'utilisateur pour accéder à cette page.');
@@ -79,6 +83,7 @@ class VoeuxController extends AbstractController
 
         return $this->render('voeux/index.html.twig', [
             'form' => $form->createView(),
+            'projets' => $projets,
         ]);
     }
 }
