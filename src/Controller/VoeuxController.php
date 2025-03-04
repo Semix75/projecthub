@@ -81,4 +81,64 @@ class VoeuxController extends AbstractController
             'projets' => $projects,
         ]);
     }
+
+    #[Route('/voeux/edit', name: 'app_voeux_edit')]
+    public function edit(Request $request): Response
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            throw new AccessDeniedException('Vous devez être connecté.');
+        }
+
+        $user = $this->getUser();
+        $existingVoeux = $this->entityManager->getRepository(Voeux::class)->findBy(['user' => $user]);
+
+        // Récupération des projets pour le formulaire
+        $projects = $this->projetRepository->findAll();
+        $choices = [];
+        foreach ($projects as $project) {
+            $choices[$project->getIntitule()] = $project->getId();
+        }
+
+        // Préparer les données pour pré-remplir le formulaire
+        $data = [];
+        foreach ($existingVoeux as $voeu) {
+            $data['projet_' . $voeu->getPriorite()] = $voeu->getProjet()->getId();
+        }
+
+        $form = $this->createForm(VoeuxType::class, $data, [
+            'projets' => $choices,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            // Supprimer les anciens vœux
+            foreach ($existingVoeux as $voeu) {
+                $this->entityManager->remove($voeu);
+            }
+
+            // Ajouter les nouveaux vœux
+            for ($i = 1; $i <= 5; $i++) {
+                $projetField = "projet_" . $i;
+                if (!empty($data[$projetField])) {
+                    $voeu = new Voeux();
+                    $voeu->setUser($user);
+                    $voeu->setProjet($this->entityManager->getRepository(Projet::class)->find($data[$projetField]));
+                    $voeu->setPriorite($i);
+                    $this->entityManager->persist($voeu);
+                }
+            }
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Vos vœux ont bien été mis à jour !');
+            return $this->redirectToRoute('app_profil'); // Redirection vers le profil
+        }
+
+        return $this->render('voeux/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }
