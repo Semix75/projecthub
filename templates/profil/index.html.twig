@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
+    <div class="card shadow-lg p-4 d-flex flex-column justify-content-between" style="max-width: 600px; width: 100%; min-height: 80vh;">
         <div class="card-body text-center">
             <h1 class="card-title">Mon Profil</h1>
             <hr>
@@ -42,6 +42,9 @@
             {% endif %}
 
             <a href="{{ path('app_voeux') }}" class="btn btn-primary mt-4">Gérer mes vœux</a>
+        </div>
+        <div class="text-center mt-auto">
+            <a class="btn btn-danger" href="{{ path('app_logout') }}">Déconnexion</a>
         </div>
     </div>
 </div>
