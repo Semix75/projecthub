@@ -53,10 +53,10 @@ class VoeuxController extends AbstractController
             $data = $form->getData();
             $user = $this->getUser();
 
-            // Supprimer les anciens vœux (optionnel, à implémenter)
+            // Supprimer les anciens voeux (optionnel, à implémenter)
             // $this->entityManager->getRepository(Voeux::class)->deleteUserVoeux($user);
 
-            // Sauvegarder chaque vœu
+            // Sauvegarder chaque voeu
             for ($i = 1; $i <= 5; $i++) {
                 $projetField = "projet_" . $i;
 

@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 		<meta name="description" content=""/>
 		<meta name="author" content=""/>
-		<title>Landing Page - Start Bootstrap Theme</title>
+		<title>{% block title %}Welcome!{% endblock %}</title>
 		<!-- Favicon-->
 		<link
 		rel="icon" type="image/x-icon" href="{{ asset('assets/favicon.ico') }}"/>
@@ -27,6 +27,7 @@
 				<div class="d-flex gap-2">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 						<a class="btn btn-primary" href="{{ path('app_voeux') }}">Mes voeux</a>
+						<a class="btn btn-primary" href="{{ path('app_profil') }}">Mon Profil</a>
 						<a class="btn btn-primary" href="{{ path('app_logout') }}">Déconnexion</a>
 					{% else %}
 						<a class="btn btn-primary" href="{{ path('app_login') }}">Connexion</a>
