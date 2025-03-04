@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\Voeux;
@@ -13,22 +14,18 @@ class VoeuxType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $projets = $options['projets'];  // On passe les projets au formulaire
+        $projets = $options['projets'];  // Récupère la liste des projets
 
-        // Ajouter des champs pour chaque projet
+        // Ajouter des champs pour chaque projet (le premier est le plus préféré)
         for ($i = 1; $i <= 5; $i++) {
             $builder->add('projet_' . $i, ChoiceType::class, [
                 'choices' => $projets,
                 'label' => 'Choix ' . $i,
-                'required' => false, // Les projets après le premier choix sont optionnels
-            ]);
-            $builder->add('priorite_' . $i, IntegerType::class, [
-                'label' => 'Priorité ' . $i,
-                'attr' => ['min' => 1, 'max' => 5],
-                'required' => false, // Priorité n'est pas requise si aucun projet n'est choisi
+                'required' => false, // Permet de ne pas forcer le choix des 5
             ]);
         }
     }
+
 
     public function configureOptions(OptionsResolver $resolver)
     {

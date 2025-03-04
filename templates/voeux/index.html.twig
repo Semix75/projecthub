@@ -1,35 +1,69 @@
-{# templates/voeux/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Choix des projets{% endblock %}
 
 {% block body %}
-    <h1>Choisissez vos projets</h1>
+<div class="container mt-4">
+    <h1 class="text-center">Choisissez vos 5 projets préférés</h1>
+    <p class="text-center">
+        <a href="{{ path('projets_index') }}">Voir la liste des projets</a>
+    </p>
 
     {{ form_start(form) }}
-    
-    <div>
-        {{ form_label(form.projet_1) }}
-        {{ form_widget(form.projet_1) }}
-        {{ form_errors(form.projet_1) }}
-    </div>
-    <div>
-        {{ form_label(form.priorite_1) }}
-        {{ form_widget(form.priorite_1) }}
-        {{ form_errors(form.priorite_1) }}
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted">Sélectionnez vos projets préférés dans l'ordre de préférence.</p>
+
+                    {% for i in 1..5 %}
+                        <div class="mb-3">
+                            {{ form_label(attribute(form, 'projet_' ~ i)) }}
+                            {{ form_widget(attribute(form, 'projet_' ~ i), {'attr': {'class': 'form-select choix-projet'}}) }}
+                            {{ form_errors(attribute(form, 'projet_' ~ i)) }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Envoyer mes choix</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div>
-        {{ form_label(form.projet_2) }}
-        {{ form_widget(form.projet_2) }}
-        {{ form_errors(form.projet_2) }}
-    </div>
-    <div>
-        {{ form_label(form.priorite_2) }}
-        {{ form_widget(form.priorite_2) }}
-        {{ form_errors(form.priorite_2) }}
-    </div>
-
-    {# Ajoute le même type de bloc pour les autres choix de projets #}
-
-    <button type="submit">Soumettre</button>
-    
     {{ form_end(form) }}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const selects = document.querySelectorAll(".choix-projet");
+
+        selects.forEach(select => {
+            select.addEventListener("change", function () {
+                let selectedValues = new Set();
+
+                // Récupérer tous les projets sélectionnés
+                selects.forEach(s => {
+                    if (s.value) {
+                        selectedValues.add(s.value);
+                    }
+                });
+
+                // Désactiver les options déjà sélectionnées dans d'autres sélecteurs
+                selects.forEach(s => {
+                    [...s.options].forEach(option => {
+                        if (option.value && selectedValues.has(option.value) && s.value !== option.value) {
+                            option.disabled = true;
+                        } else {
+                            option.disabled = false;
+                        }
+                    });
+                });
+            });
+        });
+    });
+</script>
+
 {% endblock %}

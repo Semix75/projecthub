@@ -12,16 +12,26 @@ class Voeux
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "voeux")]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"], fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: Projet::class, inversedBy: "voeux")]
+    #[ORM\ManyToOne(targetEntity: Projet::class, cascade: ["persist"], fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Projet $projet = null;
 
     #[ORM\Column(type: "integer")]
     private ?int $priorite = null;
+
+    // --- Constructeur ---
+    public function __construct(?User $user = null, ?Projet $projet = null, ?int $priorite = null)
+    {
+        $this->user = $user;
+        $this->projet = $projet;
+        $this->priorite = $priorite;
+    }
+
+    // --- Getters et Setters ---
     public function getId(): ?int
     {
         return $this->id;
@@ -49,15 +59,14 @@ class Voeux
         return $this;
     }
 
-
     public function getPriorite(): ?int
-{
-    return $this->priorite;
-}
+    {
+        return $this->priorite;
+    }
 
-public function setPriorite(int $priorite): static
-{
-    $this->priorite = $priorite;
-    return $this;
-}
+    public function setPriorite(int $priorite): static
+    {
+        $this->priorite = $priorite;
+        return $this;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Voeux;
@@ -15,24 +16,24 @@ use Symfony\Component\HttpFoundation\Response;
 class VoeuxController extends AbstractController
 {
     private $entityManager;
+    private $projetRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, ProjetRepository $projetRepository)
     {
         $this->entityManager = $entityManager;
+        $this->projetRepository = $projetRepository;
     }
 
     #[Route('/voeux', name: 'app_voeux')]
-    public function new(Request $request , ProjetRepository $p): Response
+    public function new(Request $request): Response
     {
-
-        $projets = $p->findAll();
         // Vérifier que l'utilisateur est connecté et possède le rôle "ROLE_USER"
         if (!$this->isGranted('ROLE_USER')) {
             throw new AccessDeniedException('Vous devez être connecté en tant qu\'utilisateur pour accéder à cette page.');
         }
 
         // Récupérer tous les projets depuis la base de données
-        $projects = $this->entityManager->getRepository(Projet::class)->findAll();
+        $projects = $this->projetRepository->findAll();
 
         // Préparer les options pour les projets
         $choices = [];
@@ -40,50 +41,44 @@ class VoeuxController extends AbstractController
             $choices[$project->getIntitule()] = $project->getId();
         }
 
-        // Créer un objet Voeux pour l'étudiant
+        // Création du formulaire
         $form = $this->createForm(VoeuxType::class, null, [
-            'projets' => $choices, // Passer les projets au formulaire
+            'projets' => $choices,
         ]);
 
         // Traiter la soumission du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer les données du formulaire
             $data = $form->getData();
-            $user = $this->getUser();  // L'utilisateur connecté
+            $user = $this->getUser();
 
-            /*// Supprimer les anciens voeux de l'utilisateur avant d'enregistrer les nouveaux
-            $this->entityManager->getRepository(Voeux::class)->deleteUserVoeux($user);  // Méthode à implémenter
-*/
-            // Sauvegarder chaque vœu dans la base de données avec la priorité correspondante
+            // Supprimer les anciens vœux (optionnel, à implémenter)
+            // $this->entityManager->getRepository(Voeux::class)->deleteUserVoeux($user);
+
+            // Sauvegarder chaque vœu
             for ($i = 1; $i <= 5; $i++) {
                 $projetField = "projet_" . $i;
-                $prioriteField = "priorite_" . $i;
 
-                // Si l'utilisateur a choisi un projet pour cette priorité
                 if (!empty($data[$projetField])) {
                     $voeux = new Voeux();
                     $voeux->setUser($user);
                     $voeux->setProjet($this->entityManager->getRepository(Projet::class)->find($data[$projetField]));
-                    $voeux->setPriorite($data[$prioriteField]);
+                    $voeux->setPriorite($i);
 
-                    // Sauvegarder le vœu
                     $this->entityManager->persist($voeux);
                 }
             }
 
-            // Sauvegarder toutes les données en une seule fois
             $this->entityManager->flush();
 
-            // Afficher un message de succès ou rediriger
             $this->addFlash('success', 'Vos vœux ont bien été enregistrés !');
-            return $this->redirectToRoute('app_voeux'); // Redirige vers la même page (ou une autre page)
+            return $this->redirectToRoute('app_voeux');
         }
 
         return $this->render('voeux/index.html.twig', [
             'form' => $form->createView(),
-            'projets' => $projets,
+            'projets' => $projects,
         ]);
     }
 }
