@@ -18,14 +18,17 @@ class Projet
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $intitule = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nbPlace = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: "projet", targetEntity: Voeux::class, orphanRemoval: true)]
     private Collection $voeux;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nbPlaceMin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nbPlaceMax = null;
 
     public function __construct()
     {
@@ -45,18 +48,6 @@ class Projet
     public function setIntitule(?string $intitule): static
     {
         $this->intitule = $intitule;
-
-        return $this;
-    }
-
-    public function getNbPlace(): ?int
-    {
-        return $this->nbPlace;
-    }
-
-    public function setNbPlace(?int $nbPlace): static
-    {
-        $this->nbPlace = $nbPlace;
 
         return $this;
     }
@@ -101,5 +92,29 @@ class Projet
     public function __toString(): string
     {
         return $this->intitule ?? '';
+    }
+
+    public function getNbPlaceMin(): ?int
+    {
+        return $this->nbPlaceMin;
+    }
+
+    public function setNbPlaceMin(?int $nbPlaceMin): static
+    {
+        $this->nbPlaceMin = $nbPlaceMin;
+
+        return $this;
+    }
+
+    public function getNbPlaceMax(): ?int
+    {
+        return $this->nbPlaceMax;
+    }
+
+    public function setNbPlaceMax(?int $nbPlaceMax): static
+    {
+        $this->nbPlaceMax = $nbPlaceMax;
+
+        return $this;
     }
 }

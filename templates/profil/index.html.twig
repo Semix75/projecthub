@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil
+{% endblock %}
+
+{% block body %}
+	<div class="container d-flex justify-content-center align-items-center min-vh-100">
+		<div class="card shadow-lg p-4 d-flex flex-column justify-content-between" style="max-width: 600px; width: 100%; min-height: 80vh;">
+			<div class="card-body text-center">
+				<h1 class="card-title">Mon Profil</h1>
+				<hr>
+
+				<table class="table table-bordered">
+					<tbody>
+						<tr>
+							<th class="bg-light">Prénom</th>
+							<td>{{ user.firstname }}</td>
+						</tr>
+						<tr>
+							<th class="bg-light">Nom</th>
+							<td>{{ user.lastname }}</td>
+						</tr>
+						<tr>
+							<th class="bg-light">Email</th>
+							<td>{{ user.email }}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h2 class="mt-4">Mes Vœux</h2>
+				<hr>
+				{% if voeux|length > 0 %}
+					<ul class="list-group">
+						{% for voeu in voeux %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span class="fw-bold ms-2">{{ voeu.projet.intitule }}</span>
+								<span class="badge bg-primary rounded-pill">Priorité :
+									{{ voeu.priorite }}</span>
+							</li>
+						{% endfor %}
+					</ul>
+					<a href="{{ path('app_voeux_edit') }}" class="btn btn-primary mt-4">Modifier mes vœux</a>
+				{% else %}
+					<p class="text-muted">Vous n'avez pas encore enregistré de vœux.</p>
+					<a href="{{ path('app_voeux') }}" class="btn btn-primary mt-2">Ajouter mes vœux</a>
+				{% endif %}
+			</div>
+			<div class="text-center mt-auto">
+				<a class="btn btn-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

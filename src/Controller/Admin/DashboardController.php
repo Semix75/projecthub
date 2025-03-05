@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Controller\Admin\VoeuxCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Entity\Voeux;
+use App\Entity\Attribution;
 
 
 
@@ -63,6 +64,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Voeux', 'fas fa-heart', Voeux::class);
         yield MenuItem::linkToCrud('Projet', 'fas fa-home', Projet::class);
+        yield MenuItem::linkToCrud('Attribution', 'fas fa-home', Attribution::class);
 
 
     }
