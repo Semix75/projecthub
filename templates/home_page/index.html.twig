@@ -29,9 +29,14 @@
 							<div class="card-body">
 								<h5 class="card-title">{{ projet.intitule }}</h5>
 								<p class="card-text">{{ projet.description[:100] }}...</p>
-								<p>
+								{# <p>
 									<strong>Places disponibles :</strong>
-									{{ projet.nbPlace }}</p>
+									<h5 class="card-title"> place minimun</h5>
+									{{ projet.nbPlaceMin }}</p>
+									<h5 class="card-title"> place maximum</h5>
+									{{ projet.nbPlaceMax }}
+								</p> #}
+
 								<a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-primary">Voir Détails</a>
 							</div>
 						</div>
