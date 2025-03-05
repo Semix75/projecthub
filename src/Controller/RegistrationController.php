@@ -46,11 +46,7 @@ class RegistrationController extends AbstractController
                 $user,
                 $authenticator,
                 $request
-<<<<<<< HEAD
-            ) ?: new RedirectResponse($this->generateUrl('app_etudiant'));
-=======
-            ) ?: new RedirectResponse($this->generateUrl('app_voeux'));
->>>>>>> e5334d3ba4d7f202fc800a60cd970cdb946440e9
+            ) ?: new RedirectResponse($this->generateUrl('app_profil'));
         }
 
         return $this->render('registration/register.html.twig', [
