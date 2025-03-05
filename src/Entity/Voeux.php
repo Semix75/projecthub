@@ -20,7 +20,8 @@ class Voeux
     #[ORM\JoinColumn(nullable: false)]
     private ?Projet $projet = null;
 
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: "integer", nullable: true)]
+
     private ?int $priorite = null;
 
     // --- Constructeur ---
