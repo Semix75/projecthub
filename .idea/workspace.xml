@@ -5,37 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aeec94e5-68d3-4b7c-8005-023567c7a01b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/fetch/fetch.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/fetch/fetch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/fonts/open-sans/400.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/fonts/open-sans/400.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/fonts/open-sans/700.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/fonts/open-sans/700.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/graphiql-style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/graphiql-style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/graphiql/graphiql.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/graphiql/graphiql.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground-style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground-style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground/middleware.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/graphql-playground/middleware.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/init-common-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/init-common-ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/init-graphiql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/init-graphiql.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/init-graphql-playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/init-graphql-playground.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/init-redoc-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/init-redoc-ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/init-swagger-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/init-swagger-ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/logo-header.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/logo-header.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/react/react-dom.production.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/react/react-dom.production.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/redoc/redoc.standalone.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/redoc/redoc.standalone.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/oauth2-redirect.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/oauth2-redirect.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui-bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui-bundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui-standalone-preset.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui-standalone-preset.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/apiplatform/swagger-ui/swagger-ui.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/app.1ecd6d7a.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/app.1ecd6d7a.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/app.1ecd6d7a.js.LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/app.1ecd6d7a.js.LICENSE.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/app.62f32d02.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/app.62f32d02.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/entrypoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/entrypoints.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/field-text-editor.cd20e325.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/field-text-editor.cd20e325.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/field-text-editor.cd20e325.js.LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/field-text-editor.cd20e325.js.LICENSE.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bundles/easyadmin/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/bundles/easyadmin/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/etudiant/index.html.twig" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -276,6 +248,7 @@
       <workItem from="1740647177638" duration="604000" />
       <workItem from="1741615837130" duration="136000" />
       <workItem from="1741684123736" duration="446000" />
+      <workItem from="1741684658036" duration="1554000" />
     </task>
     <servers />
   </component>
