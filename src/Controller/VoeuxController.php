@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Repository\ProjetRepository;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\FormError;
 
 class VoeuxController extends AbstractController
 {
@@ -27,53 +28,69 @@ class VoeuxController extends AbstractController
     #[Route('/voeux', name: 'app_voeux')]
     public function new(Request $request): Response
     {
-        // Vérifier que l'utilisateur est connecté et possède le rôle "ROLE_USER"
         if (!$this->isGranted('ROLE_USER')) {
             throw new AccessDeniedException('Vous devez être connecté en tant qu\'utilisateur pour accéder à cette page.');
         }
 
-        // Récupérer tous les projets depuis la base de données
-        $projects = $this->projetRepository->findAll();
+        $user = $this->getUser();
+        $existingVoeux = $this->entityManager->getRepository(Voeux::class)->findBy(['user' => $user]);
 
-        // Préparer les options pour les projets
+        if (!empty($existingVoeux)) {
+            $this->addFlash('error', 'Vous avez déjà enregistré des vœux. Vous ne pouvez pas en ajouter d\'autres.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $projects = $this->projetRepository->findAll();
         $choices = [];
         foreach ($projects as $project) {
             $choices[$project->getIntitule()] = $project->getId();
         }
 
-        // Création du formulaire
         $form = $this->createForm(VoeuxType::class, null, [
             'projets' => $choices,
         ]);
 
-        // Traiter la soumission du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $user = $this->getUser();
+            $selectedProjects = [];
 
-            // Supprimer les anciens voeux (optionnel, à implémenter)
-            // $this->entityManager->getRepository(Voeux::class)->deleteUserVoeux($user);
-
-            // Sauvegarder chaque voeu
             for ($i = 1; $i <= 5; $i++) {
                 $projetField = "projet_" . $i;
-
                 if (!empty($data[$projetField])) {
-                    $voeux = new Voeux();
-                    $voeux->setUser($user);
-                    $voeux->setProjet($this->entityManager->getRepository(Projet::class)->find($data[$projetField]));
-                    $voeux->setPriorite($i);
-
-                    $this->entityManager->persist($voeux);
+                    $selectedProjects[] = $data[$projetField];
                 }
+            }
+
+            if (count($selectedProjects) !== 5) {
+                $form->addError(new FormError('Vous devez sélectionner exactement 5 projets.'));
+            }
+
+            if (count(array_unique($selectedProjects)) < 5) {
+                $form->addError(new FormError('Chaque projet doit être unique.'));
+            }
+
+            if ($form->getErrors(true)->count() > 0) {
+                return $this->render('voeux/index.html.twig', [
+                    'form' => $form->createView(),
+                    'projets' => $projects,
+                ]);
+            }
+
+            foreach ($selectedProjects as $index => $projetId) {
+                $voeu = new Voeux();
+                $voeu->setUser($user);
+                $voeu->setProjet($this->entityManager->getRepository(Projet::class)->find($projetId));
+                $voeu->setPriorite($index + 1);
+
+                $this->entityManager->persist($voeu);
             }
 
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Vos vœux ont bien été enregistrés !');
-            return $this->redirectToRoute('app_voeux');
+            return $this->redirectToRoute('app_profil');
         }
 
         return $this->render('voeux/index.html.twig', [
@@ -92,18 +109,19 @@ class VoeuxController extends AbstractController
         $user = $this->getUser();
         $existingVoeux = $this->entityManager->getRepository(Voeux::class)->findBy(['user' => $user]);
 
-        // Récupération des projets pour le formulaire
+        if (count($existingVoeux) !== 5) {
+            $this->addFlash('error', 'Vous devez avoir exactement 5 vœux pour modifier votre sélection.');
+            return $this->redirectToRoute('app_voeux');
+        }
+
         $projects = $this->projetRepository->findAll();
         $choices = [];
         foreach ($projects as $project) {
             $choices[$project->getIntitule()] = $project->getId();
         }
 
-        // Préparer les données pour pré-remplir le formulaire
         $data = [];
-        foreach ($existingVoeux as $voeu) {
-            $data['projet_' . $voeu->getPriorite()] = $voeu->getProjet()->getId();
-        }
+
 
         $form = $this->createForm(VoeuxType::class, $data, [
             'projets' => $choices,
@@ -113,28 +131,36 @@ class VoeuxController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            $selectedProjects = [];
 
-            // Supprimer les anciens vœux
+            for ($i = 1; $i <= 5; $i++) {
+                $projetField = "projet_" . $i;
+                if (!empty($data[$projetField])) {
+                    $selectedProjects[] = $data[$projetField];
+                }
+            }
+
+            if (count($selectedProjects) !== 5) {
+                $this->addFlash('error', 'Vous devez sélectionner exactement 5 projets.');
+                return $this->redirectToRoute('app_voeux_edit');
+            }
+
             foreach ($existingVoeux as $voeu) {
                 $this->entityManager->remove($voeu);
             }
 
-            // Ajouter les nouveaux vœux
-            for ($i = 1; $i <= 5; $i++) {
-                $projetField = "projet_" . $i;
-                if (!empty($data[$projetField])) {
-                    $voeu = new Voeux();
-                    $voeu->setUser($user);
-                    $voeu->setProjet($this->entityManager->getRepository(Projet::class)->find($data[$projetField]));
-                    $voeu->setPriorite($i);
-                    $this->entityManager->persist($voeu);
-                }
+            foreach ($selectedProjects as $index => $projetId) {
+                $voeu = new Voeux();
+                $voeu->setUser($user);
+                $voeu->setProjet($this->entityManager->getRepository(Projet::class)->find($projetId));
+                $voeu->setPriorite($index + 1);
+                $this->entityManager->persist($voeu);
             }
 
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Vos vœux ont bien été mis à jour !');
-            return $this->redirectToRoute('app_profil'); // Redirection vers le profil
+            return $this->redirectToRoute('app_profil');
         }
 
         return $this->render('voeux/edit.html.twig', [

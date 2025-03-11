@@ -25,6 +25,12 @@
                         </div>
                     {% endfor %}
 
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {{ form_errors(form) }}
+                        </div>
+                    {% endif %}
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Envoyer mes choix</button>
                     </div>
@@ -40,30 +46,23 @@
     document.addEventListener("DOMContentLoaded", function () {
         const selects = document.querySelectorAll(".choix-projet");
 
-        selects.forEach(select => {
-            select.addEventListener("change", function () {
-                let selectedValues = new Set();
+        function updateSelectOptions() {
+            let selectedValues = new Set();
+            selects.forEach(select => {
+                if (select.value) {
+                    selectedValues.add(select.value);
+                }
+            });
 
-                // Récupérer tous les projets sélectionnés
-                selects.forEach(s => {
-                    if (s.value) {
-                        selectedValues.add(s.value);
-                    }
-                });
-
-                // Désactiver les options déjà sélectionnées dans d'autres sélecteurs
-                selects.forEach(s => {
-                    [...s.options].forEach(option => {
-                        if (option.value && selectedValues.has(option.value) && s.value !== option.value) {
-                            option.disabled = true;
-                        } else {
-                            option.disabled = false;
-                        }
-                    });
+            selects.forEach(select => {
+                [...select.options].forEach(option => {
+                    option.disabled = selectedValues.has(option.value) && select.value !== option.value;
                 });
             });
-        });
+        }
+
+        selects.forEach(select => select.addEventListener("change", updateSelectOptions));
+        updateSelectOptions();
     });
 </script>
-
-		{% endblock %}
+{% endblock %}

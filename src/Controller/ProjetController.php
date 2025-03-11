@@ -18,6 +18,7 @@ class ProjetController extends AbstractController
         ]);
     }
 
+    
 
     #[Route('/projet/{id}', name: 'projet_detail')]
 public function detail(int $id, ProjetRepository $projetRepository): Response
