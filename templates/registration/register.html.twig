@@ -4,12 +4,18 @@
 
 {% block body %}
     <div class="container d-flex justify-content-center mt-5 vh-100">
-        <div class="card p-4 shadow" style="width: 400px; height: 600px;">
+        <div class="card p-4 shadow" style="width: 400px; height: 655px;">
             <h1 class="text-center">Register</h1>
 
             {{ form_errors(registrationForm) }}
 
             {{ form_start(registrationForm) }}
+               <div class="mb-3">
+                    {{ form_row(registrationForm.username, {
+                        label: 'username',
+                        attr: { class: 'form-control' }
+                    }) }}
+                </div>  
                 <div class="mb-3">
                     {{ form_row(registrationForm.firstname, {
                         label: 'First Name',
@@ -19,6 +25,11 @@
                 <div class="mb-3">
                     {{ form_row(registrationForm.lastname, {
                         label: 'Last Name',
+                        attr: { class: 'form-control' }
+                    }) }}
+                </div>
+                <div class="mb-3 ">
+                    {{ form_row(registrationForm.biographie, {
                         attr: { class: 'form-control' }
                     }) }}
                 </div>

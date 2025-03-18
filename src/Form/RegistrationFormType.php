@@ -43,6 +43,17 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('email')
+            ->add('username')
+            ->add('biographie', TextType::class, [
+                'label' => 'Biography',
+                'required' => false,
+                'constraints' => [
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'Biography cannot be longer than {{ limit }} characters',
+                    ]),
+                ],
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
