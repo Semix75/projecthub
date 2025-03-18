@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercure Debugging Tools</title>
-</head>
-<body>
-    <h1>Mercure Debugging Tools</h1>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mercure Debugging Tools</title>
+    </head>
+    <body>
+        <h1>Mercure Debugging Tools</h1>
 
-    <h2>📡 S'abonner à un topic</h2>
-    <input type="text" id="subscribeTopic" placeholder="Nom du topic (ex: chat)">
-    <button onclick="subscribe()">S'abonner</button>
-    <div id="messages"></div>
+        <h2>📡 S'abonner à un topic</h2>
+        <input type="text" id="subscribeTopic"
+            placeholder="Nom du topic (ex: chat)">
+        <button onclick="subscribe()">S'abonner</button>
+        <div id="messages"></div>
 
-    <h2>🚀 Publier un message</h2>
-    <input type="text" id="publishTopic" placeholder="Nom du topic (ex: chat)">
-    <textarea id="publishMessage" placeholder="Message à envoyer"></textarea>
-    <button onclick="publish()">Envoyer</button>
+        <h2>🚀 Publier un message</h2>
+        <input type="text" id="publishTopic"
+            placeholder="Nom du topic (ex: chat)">
+        <textarea id="publishMessage"
+            placeholder="Message à envoyer"></textarea>
+        <button onclick="publish()">Envoyer</button>
 
-    <script>
-function subscribe() {
+        <script>
+        function subscribe() {
     const topic = document.getElementById('subscribeTopic').value;
-    
-    // Remplace avec ton fichier PHP qui génère un JWT valide
+
     fetch("http://127.0.0.1:8000/generate_jwt.php")
         .then(response => response.text())
         .then(jwt => {
-            const eventSource = new EventSource(`http://localhost:3000/.well-known/mercure?topic=${topic}&Authorization=Bearer ${jwt}`);
+            console.log("✅ JWT reçu :", jwt); // Vérifie que le token est bien récupéré
 
+            const eventSource = new EventSource(`http://localhost:3000/.well-known/mercure?topic=${topic}`);
+
+
+            eventSource.onopen = () => console.log("✅ Connexion Mercure établie !");
+            eventSource.onerror = (err) => console.error("🚨 Erreur EventSource :", err);
             eventSource.onmessage = function(event) {
-                console.log("📩 Message reçu :", event.data);
-                const messageDiv = document.getElementById('messages');
-                const newMessage = document.createElement('p');
-                newMessage.textContent = `📩 Nouveau message: ${event.data}`;
-                messageDiv.appendChild(newMessage);
+                console.log("📩 [DEBUG] Nouveau message détecté !");
+    console.log("📩 Message reçu :", event.data);
+
+    const messageDiv = document.getElementById('messages');
+    const newMessage = document.createElement('p');
+    newMessage.textContent = `📩 Nouveau message: ${event.data}`;
+    messageDiv.appendChild(newMessage);
             };
 
-            alert(`Abonné au topic: ${topic}`);
+            alert(`📡 Abonné au topic: ${topic}`);
         })
-        .catch(error => console.error("Erreur lors de la récupération du JWT :", error));
+        .catch(error => console.error("❌ Erreur lors de la récupération du JWT :", error));
 }
 
         function publish() {
@@ -63,5 +72,5 @@ function subscribe() {
 }
 
     </script>
-</body>
+    </body>
 </html>

@@ -15,6 +15,7 @@ services:
         ui 
         cors_origins *
         publish_origins *
+        allow_anonymous
     ports:
       - "3000:80"
     volumes:
