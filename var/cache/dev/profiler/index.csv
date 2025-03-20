@@ -2152,3 +2152,17 @@ aedd43,127.0.0.1,GET,http://127.0.0.1:8000/friends,1742492520,,200,request
 95d168,127.0.0.1,GET,http://127.0.0.1:8000/friend-requests,1742492521,,200,request
 58d203,127.0.0.1,GET,http://127.0.0.1:8000/,1742492522,,200,request
 748d5b,127.0.0.1,GET,http://127.0.0.1:8000/groups,1742492523,,200,request
+8d14fb,127.0.0.1,GET,http://127.0.0.1:8000/,1742494551,,200,request
+2cb526,127.0.0.1,GET,http://127.0.0.1:8000/login,1742494553,,200,request
+fa54df,127.0.0.1,POST,http://127.0.0.1:8000/login,1742494555,,302,request
+053120,127.0.0.1,GET,http://127.0.0.1:8000/admin,1742494555,,302,request
+6ec83a,127.0.0.1,GET,http://127.0.0.1:8000/login,1742494555,,302,request
+ac5dd1,127.0.0.1,GET,http://127.0.0.1:8000/profil,1742494555,,200,request
+1d77bf,127.0.0.1,GET,http://127.0.0.1:8000/friends,1742494559,,200,request
+36ad14,127.0.0.1,GET,http://127.0.0.1:8000/friends/add,1742494561,,200,request
+31e70b,127.0.0.1,GET,http://127.0.0.1:8000/friends,1742494562,,200,request
+645943,127.0.0.1,GET,http://127.0.0.1:8000/friends/blocked,1742494562,,200,request
+aca86d,127.0.0.1,GET,http://127.0.0.1:8000/friends,1742494565,,200,request
+2a107f,127.0.0.1,GET,http://127.0.0.1:8000/friend-requests,1742494566,,200,request
+8894eb,127.0.0.1,GET,http://127.0.0.1:8000/,1742494567,,200,request
+a0bf06,127.0.0.1,GET,http://127.0.0.1:8000/groups,1742494568,,200,request
