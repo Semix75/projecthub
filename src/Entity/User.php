@@ -52,16 +52,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     /**
+ * @var Collection<int, Friendship>
+ */
+#[ORM\OneToMany(targetEntity: Friendship::class, mappedBy: 'receiver')]
+private Collection $receivedFriendRequests;
+
+    /**
      * @var Collection<int, Friendship>
      */
     #[ORM\OneToMany(targetEntity: Friendship::class, mappedBy: 'requester')]
     private Collection $friendships;
 
-    /**
-     * @var Collection<int, Friendship>
-     */
-    #[ORM\OneToMany(targetEntity: Friendship::class, mappedBy: 'receiver')]
-    private Collection $receiverFriendship;
+
 
     /**
      * @var Collection<int, Message>
@@ -268,57 +270,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return $this->friendships;
         }
 
-        public function addFriendship(Friendship $friendship): static
+        public function removeReceivedFriendRequest(Friendship $friendship): static
         {
-            if (!$this->friendships->contains($friendship)) {
-                $this->friendships->add($friendship);
-                $friendship->setRequester($this);
-            }
-
-            return $this;
-        }
-
-        public function removeFriendship(Friendship $friendship): static
-        {
-            if ($this->friendships->removeElement($friendship)) {
-                // set the owning side to null (unless already changed)
-                if ($friendship->getRequester() === $this) {
-                    $friendship->setRequester(null);
+            if ($this->receivedFriendRequests->removeElement($friendship)) {
+                if ($friendship->getReceiver() === $this) {
+                    $friendship->setReceiver(null);
                 }
             }
-
             return $this;
         }
+        
 
-        /**
-         * @return Collection<int, Friendship>
-         */
-        public function getReceiverFriendship(): Collection
+        public function getReceivedFriendRequests(): Collection
         {
-            return $this->receiverFriendship;
+            return $this->receivedFriendRequests;
         }
-
-        public function addReceiverFriendship(Friendship $receiverFriendship): static
+        public function addReceivedFriendRequest(Friendship $friendship): static
         {
-            if (!$this->receiverFriendship->contains($receiverFriendship)) {
-                $this->receiverFriendship->add($receiverFriendship);
-                $receiverFriendship->setReceiver($this);
+            if (!$this->receivedFriendRequests->contains($friendship)) {
+                $this->receivedFriendRequests->add($friendship);
+                $friendship->setReceiver($this);
             }
-
             return $this;
         }
-
-        public function removeReceiverFriendship(Friendship $receiverFriendship): static
-        {
-            if ($this->receiverFriendship->removeElement($receiverFriendship)) {
-                // set the owning side to null (unless already changed)
-                if ($receiverFriendship->getReceiver() === $this) {
-                    $receiverFriendship->setReceiver(null);
-                }
-            }
-
-            return $this;
-        }
+    
 
         /**
          * @return Collection<int, Message>

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+	<h1>Mes Amis</h1>
+
+
+	{% if friends is empty %}
+		<p>Vous n'avez pas encore d'amis.</p>
+	{% else %}
+		<ul>
+			{% for friend in friends %}
+				{% if friend.requester == app.user %}
+					{% set friendUser = friend.receiver %}
+				{% else %}
+					{% set friendUser = friend.requester %}
+				{% endif %}
+
+				<li>
+					{{ friendUser.email }}
+					<form action="{{ path('app_remove_friend', {'id': friend.id}) }}" method="post" style="display:inline;">
+						<button class="btn btn-danger" type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cet ami ?')">Supprimer</button>
+					</form>
+
+					<form action="{{ path('app_block_friend', {'id': friend.id}) }}" method="post" style="display:inline;">
+						<button class="btn btn-dark" type="submit" onclick="return confirm('Voulez-vous vraiment bloquer cet utilisateur ?')">🚫 Bloquer</button>
+					</form>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<a class="btn btn-primary" href="{{ path('app_friend_requests') }}">
+		voir les demandes d'amis</a>
+	<a class="btn btn-primary" href="{{ path('app_add_friend') }}">➕ Ajouter un ami</a>
+<a href="{{ path('app_list_block_friend') }}">Voir les utilisateurs bloqués</a>
+
+
+{% endblock %}

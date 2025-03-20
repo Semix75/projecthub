@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs bloqués{% endblock %}
+
+{% block body %}
+<h1>Liste des utilisateurs bloqués</h1>
+
+<h2>🚫 Utilisateurs que j'ai bloqués</h2>
+<ul>
+    {% for friendship in blockedByMe %}
+        <li>👤 {{ friendship.receiver.username }} (bloqué par moi)
+            <form action="{{ path('app_unblock_friend', {id: friendship.id}) }}" method="post">
+                <button type="submit">Débloquer</button>
+            </form>
+        </li>
+    {% else %}
+        <li>Aucun utilisateur bloqué.</li>
+    {% endfor %}
+</ul>
+
+<h2>🚨 Utilisateurs qui m'ont bloqué</h2>
+<ul>
+    {% for friendship in blockedMe %}
+        <li>⛔ {{ friendship.blockedBy == friendship.requester.id ? friendship.requester.username : friendship.receiver.username }} (vous a bloqué)</li>
+    {% else %}
+        <li>Personne ne vous a bloqué.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

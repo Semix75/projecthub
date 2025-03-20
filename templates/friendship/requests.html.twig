@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+
+    <h1>Demandes d'amis</h1>
+
+    {% if requests is empty %}
+        <p>Aucune demande d'ami reçue.</p>
+    {% else %}
+        <ul>
+            {% for request in requests %}
+                <li>
+                    {{ request.requester.email }}
+                    <a href="{{ path('app_accept_friend', { id: request.id }) }}">✅ Accepter</a>
+                    <a href="{{ path('app_decline_friend', { id: request.id }) }}" onclick="return confirm('Voulez-vous vraiment refuser cette demande ?')">❌ Refuser</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% else %}
+    <p>Vous devez être connecté pour voir cette page.</p>
+{% endif %}
+{% endblock %}

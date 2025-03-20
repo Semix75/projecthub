@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Ajouter un ami</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ path('app_add_friend') }}" method="post">
+        <label for="friend_identifier">Entrez l'email ou le pseudo :</label>
+        <input type="text" id="friend_identifier" name="friend_identifier" required>
+        <button type="submit">Envoyer la demande</button>
+    </form>
+
+    <a href="{{ path('app_friends_list') }}">Retour à la liste d'amis</a>
+{% endblock %}

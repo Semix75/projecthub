@@ -24,6 +24,8 @@ class Friendship
     #[ORM\Column(type: 'string', length: 255)]
     private string $status = 'pending';
 
+    #[ORM\Column(type: "integer", nullable: true)]
+    private ?int $blockedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $createdAt = null;
@@ -34,7 +36,7 @@ class Friendship
     #[ORM\ManyToOne(inversedBy: 'friendships')]
     private ?User $requester = null;
 
-    #[ORM\ManyToOne(inversedBy: 'receiverFriendship')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedFriendRequests')]
     private ?User $receiver = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -61,6 +63,18 @@ class Friendship
 
         return $this;
     }
+
+    public function getBlockedBy(): ?int
+    {
+        return $this->blockedBy;
+    }
+
+    public function setBlockedBy(?int $userId): static
+    {
+        $this->blockedBy = $userId;
+        return $this;
+    }
+
 
     public function getStatus(): string
     {
