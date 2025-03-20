@@ -36,7 +36,7 @@
 				<a class="navbar-brand" href="/">ProjectHub</a>
 				<div class="d-flex gap-2">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-						<a class="btn btn-primary" href="#">Mes favoris</a>
+						<a class="btn btn-primary" href="{{ path('app_favoris') }}">Mes favoris</a>
 						<a class="btn btn-primary" href="{{ path('app_profil') }}">Mon profil</a>
                         <a class="btn btn-primary" href="{{ path('app_friends_list') }}">Liste d'amis</a>
 						<a class="btn btn-primary" href="{{ path('app_groups_list') }}">Groupe</a>

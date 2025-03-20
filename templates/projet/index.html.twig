@@ -13,9 +13,10 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ projet.intitule }}</h5>
                         <p class="card-text">{{ projet.description[:100] }}...</p>
-                        {# <p><strong>Places disponibles :</strong> {{ projet.nbPlace }}</p> #}
                         <a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-primary">Voir Détails</a>
-                        <a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-primary">Voir Détails</a>
+                        <button class="btn btn-favoris {% if projet in favoris %}btn-danger{% else %}btn-outline-danger{% endif %}" data-id="{{ projet.id }}">
+                            {% if projet in favoris %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -24,4 +25,35 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.btn-favoris').forEach(button => {
+        button.addEventListener('click', function () {
+            let projetId = this.dataset.id;
+            let button = this;
+
+            fetch('/favoris/toggle/' + projetId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    button.classList.remove('btn-outline-danger');
+                    button.classList.add('btn-danger');
+                    button.textContent = 'Retirer des favoris';
+                } else {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-outline-danger');
+                    button.textContent = 'Ajouter aux favoris';
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+</script>
+
 {% endblock %}

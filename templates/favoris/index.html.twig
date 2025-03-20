@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Mes Favoris</h1>
+
+    <div class="row">
+        {% for favori in favoris %}
+            <div class="col-md-4" id="favori-{{ favori.id }}">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ favori.projet.intitule }}</h5>
+                        <p class="card-text">{{ favori.projet.description[:100] }}...</p>
+                        <a href="{{ path('projet_detail', { id: favori.projet.id }) }}" class="btn btn-primary">Voir Détails</a>
+                        <button class="btn btn-danger btn-remove-favori" data-id="{{ favori.id }}">❌ Retirer</button>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-center">Vous n'avez aucun favori.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.btn-remove-favori').forEach(button => {
+        button.addEventListener('click', function () {
+            let favoriId = this.dataset.id;
+
+            fetch('/favoris/remove/' + favoriId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'removed') {
+                    // Redirection pour rafraîchir la page
+                    location.reload();  // Cela recharge la page après la suppression du favori
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+</script>
+
+{% endblock %}
