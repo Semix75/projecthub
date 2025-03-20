@@ -18,6 +18,7 @@ si il y a marquer que mercure tourne c'est bon sinon bon courage
 si vous voulais ajouter les fixtures :
 - php bin/console doctrine:fixtures:load
 - creer un user b avec tous en b et l'email b@gmail.com
+- creer un user admin avec tous en admin et l'email admin@gmail.com
 - php bin/console doctrine:fixtures:load --group=friends --append
 - php bin/console doctrine:fixtures:load --group=request --append
 
