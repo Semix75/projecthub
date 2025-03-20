@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Groupes{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">👥 Liste des Groupes</h1>
+
+    <!-- Boutons Actions (placés en haut) -->
+    <div class="d-flex justify-content-center gap-3 mb-4">
+        <a href="{{ path('home') }}" class="btn btn-outline-primary">🏠 Retour à l'accueil</a>
+        <a href="{{ path('app_generate_groups') }}" class="btn btn-primary">🔄 Mettre à jour les groupes</a>
+    </div>
+
+    <!-- Mes Groupes -->
+    <div class="mb-5">
+        <h2 class="text-primary">📌 Mes Groupes</h2>
+        {% if userGroups is empty %}
+            <p class="text-muted">Vous n'êtes dans aucun groupe.</p>
+        {% else %}
+            <div class="row">
+                {% for group in userGroups %}
+                    <div class="col-md-6">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="card-title text-primary">{{ group.nom }}</h3>
+                                <p class="card-text"><strong>📌 Projet :</strong> {{ group.projet.intitule }}</p>
+
+                                <h4 class="h6 text-muted">👥 Membres :</h4>
+                                <ul class="list-group">
+                                    {% for member in group.users %}
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-person-circle me-2 fs-5 text-primary"></i>
+                                            <a href="{{ path('app_user_profile', {'id': member.id}) }}" class="text-decoration-none">
+                                                {{ member.username }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Tous les Groupes -->
+    <div>
+        <h2 class="text-success">🌍 Tous les Groupes</h2>
+        {% if allGroups is empty %}
+            <p class="text-muted">Aucun groupe disponible.</p>
+        {% else %}
+            <div class="row">
+                {% for group in allGroups %}
+                    <div class="col-md-6">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="card-title text-success">{{ group.nom }}</h3>
+                                <p class="card-text"><strong>📌 Projet :</strong> {{ group.projet.intitule }}</p>
+
+                                <h4 class="h6 text-muted">👥 Membres :</h4>
+                                <ul class="list-group">
+                                    {% for member in group.users %}
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-person-circle me-2 fs-5 text-success"></i>
+                                            <a href="{{ path('app_user_profile', {'id': member.id}) }}" class="text-decoration-none">
+                                                {{ member.username }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -51,6 +51,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $username = null;
 
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'users')]
+private Collection $groupes;
+
     /**
  * @var Collection<int, Friendship>
  */
@@ -381,5 +384,6 @@ private Collection $receivedFriendRequests;
 
             return $this;
         }
+
 
 }
