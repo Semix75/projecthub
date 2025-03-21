@@ -3,8 +3,8 @@
 {% block title %}Mes Favoris{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Mes Favoris</h1>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Mes Favoris</h1>
 
     <div class="row">
         {% for favori in favoris %}
@@ -19,7 +19,9 @@
                 </div>
             </div>
         {% else %}
-            <p class="text-center">Vous n'avez aucun favori.</p>
+            <div class="col-12">
+                <p class="text-center text-muted" style="font-size: 1.5rem; font-weight: bold;">Vous n'avez aucun favori.</p>
+            </div>
         {% endfor %}
     </div>
 </div>
@@ -39,8 +41,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'removed') {
-                    // Redirection pour rafraîchir la page
-                    location.reload();  // Cela recharge la page après la suppression du favori
+                    location.reload(); 
                 }
             })
             .catch(error => console.error('Erreur:', error));
