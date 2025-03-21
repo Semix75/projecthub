@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 d-flex flex-column justify-content-between" style="max-width: 600px; width: 100%; min-height: 80vh;">
+        <div class="card-body text-center">
+            <h1 class="card-title">Modifier mon profil</h1>
+            <hr>
+
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                <div class="mb-3 text-start">
+                    {{ form_label(form.firstname, 'Prénom', {'label_attr': {'class': 'fw-bold'}}) }}
+                    {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3 text-start">
+                    {{ form_label(form.lastname, 'Nom', {'label_attr': {'class': 'fw-bold'}}) }}
+                    {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3 text-start">
+                    {{ form_label(form.email, 'Email', {'label_attr': {'class': 'fw-bold'}}) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3 text-start">
+                    {{ form_label(form.profilePicture, 'Photo de profil', {'label_attr': {'class': 'fw-bold'}}) }}
+                    {{ form_widget(form.profilePicture, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <button type="submit" class="btn btn-outline-primary mt-4 rounded-pill w-20">Enregistrer</button>
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
+        <div class="text-center mt-auto">
+            <a href="{{ path('app_profil') }}" class="btn btn-outline-dark rounded-pill">Annuler</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
