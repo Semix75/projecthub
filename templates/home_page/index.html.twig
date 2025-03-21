@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue !
-{% endblock %}
+{% block title %}Bienvenue !{% endblock %}
 
 {% block body %}
 	<!-- Masthead-->
@@ -10,7 +9,7 @@
 			<div class="row justify-content-center">
 				<div class="col-xl-6">
 					<div class="text-center text-white">
-						<h1 class="mb-5">Decouvrez et choisissez le projet qui vous plait !</h1>
+						<h1 class="mb-5">Découvrez et choisissez le projet qui vous plaît !</h1>
 					</div>
 				</div>
 			</div>
@@ -29,31 +28,24 @@
 							<div class="card-body">
 								<h5 class="card-title">{{ projet.intitule }}</h5>
 								<p class="card-text">{{ projet.description[:100] }}...</p>
-								{# <p>
-									<strong>Places disponibles :</strong>
-									<h5 class="card-title"> place minimun</h5>
-									{{ projet.nbPlaceMin }}</p>
-									<h5 class="card-title"> place maximum</h5>
-									{{ projet.nbPlaceMax }}
-								</p> #}
-								<a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-primary">Voir Détails</a>
+								<a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-outline-dark rounded-pill px-4 py-2">Voir Détails</a>
 							</div>
 						</div>
 					</div>
 				{% else %}
-					<p>Aucun projet disponible.</p>
+					<p class="text-center">Aucun projet disponible.</p>
 				{% endfor %}
 			</div>
 
 			<div class="text-center mt-4">
-				<a href="{{ path('projets_index') }}" class="btn btn-outline-primary">Voir tous les projets</a>
+				<a href="{{ path('projets_index') }}" class="btn btn-outline-primary rounded-pill px-4 py-2 mb-4">Voir tous les projets</a>
 			</div>
 		</div>
 	</section>
 	<!-- Testimonials-->
 	<section class="testimonials text-center bg-light">
 		<div class="container">
-			<h2 class="mb-5">developper par</h2>
+			<h2 class="mb-5">Développé par</h2>
 			<div class="row">
 				<div class="col-lg-4">
 					<div class="testimonial-item mx-auto mb-5 mb-lg-0">
@@ -80,7 +72,6 @@
 		</div>
 	</section>
 	<!-- Footer-->
-	<!-- Footer -->
 	<footer class="footer bg-light">
 		<div class="container">
 			<div class="row">

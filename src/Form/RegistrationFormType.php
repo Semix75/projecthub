@@ -12,6 +12,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class RegistrationFormType extends AbstractType
 {
@@ -52,6 +54,18 @@ class RegistrationFormType extends AbstractType
                         'max' => 255,
                         'maxMessage' => 'Biography cannot be longer than {{ limit }} characters',
                     ]),
+                ],
+            ])
+            ->add('profilePicture', FileType::class, [
+                'label' => 'Profile Picture (JPEG, PNG, GIF)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF)',
+                    ])
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
