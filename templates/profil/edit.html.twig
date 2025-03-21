@@ -4,34 +4,32 @@
 
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4 d-flex flex-column justify-content-between" style="max-width: 600px; width: 100%; min-height: 80vh;">
-        <div class="card-body text-center">
-            <h1 class="card-title">Modifier mon profil</h1>
+    <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
+        <div class="card-body">
+            <h1 class="card-title text-center">Modifier mon profil</h1>
             <hr>
-
             {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-                <div class="mb-3 text-start">
-                    {{ form_label(form.firstname, 'Prénom', {'label_attr': {'class': 'fw-bold'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.firstname) }}
                     {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
                 </div>
-                <div class="mb-3 text-start">
-                    {{ form_label(form.lastname, 'Nom', {'label_attr': {'class': 'fw-bold'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.lastname) }}
                     {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
                 </div>
-                <div class="mb-3 text-start">
-                    {{ form_label(form.email, 'Email', {'label_attr': {'class': 'fw-bold'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.email) }}
                     {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
                 </div>
-                <div class="mb-3 text-start">
-                    {{ form_label(form.profilePicture, 'Photo de profil', {'label_attr': {'class': 'fw-bold'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.profilePicture) }}
                     {{ form_widget(form.profilePicture, {'attr': {'class': 'form-control'}}) }}
                 </div>
-
-                <button type="submit" class="btn btn-outline-primary mt-4 rounded-pill w-20">Enregistrer</button>
-            {{ form_end(form, {'render_rest': false}) }}
-        </div>
-        <div class="text-center mt-auto">
-            <a href="{{ path('app_profil') }}" class="btn btn-outline-dark rounded-pill">Annuler</a>
+                <!-- Utilisation du bouton Symfony avec le style Bootstrap -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-outline-primary rounded-pill w-20'}}) }}
+                </div>
+            {{ form_end(form) }}
         </div>
     </div>
 </div>
