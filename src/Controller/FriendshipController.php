@@ -156,32 +156,34 @@ class FriendshipController extends AbstractController
         if (!$security->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('app_login');
         }
-
+    
         $user = $this->getUser();
-
+    
         // Récupérer les utilisateurs que j'ai bloqués
         $blockedByMe = $friendshipRepository->createQueryBuilder('f')
-            ->where('f.blockedBy = :user')
-            ->setParameter('user', $user->getId())
-            ->getQuery()
-            ->getResult();
-
-        // Récupérer les utilisateurs qui m'ont bloqué
-        $blockedMe = $friendshipRepository->createQueryBuilder('f')
             ->where('f.status = :status')
-            ->andWhere('f.blockedBy IS NOT NULL')
-            ->andWhere('f.blockedBy != :user') // Filtrer ceux qui m'ont bloqué
+            ->andWhere('f.blockedBy = :user')
             ->setParameter('status', Friendship::STATUS_BLOCKED)
             ->setParameter('user', $user->getId())
             ->getQuery()
             ->getResult();
-
+    
+        // Récupérer les utilisateurs qui m'ont bloqué
+        $blockedMe = $friendshipRepository->createQueryBuilder('f')
+            ->where('f.status = :status')
+            ->andWhere('f.blockedBy IS NOT NULL')
+            ->andWhere('f.blockedBy != :user')
+            ->setParameter('status', Friendship::STATUS_BLOCKED)
+            ->setParameter('user', $user->getId())
+            ->getQuery()
+            ->getResult();
+    
         return $this->render('friendship/blocked.html.twig', [
             'blockedByMe' => $blockedByMe,
             'blockedMe' => $blockedMe,
         ]);
     }
-
+    
 
 
     #[Route('/friends/unblock/{id}', name: 'app_unblock_friend', methods: ['POST'])]
