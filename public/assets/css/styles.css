@@ -2565,7 +2565,6 @@ textarea.form-control-lg {
 .input-group:not(.has-validation) > .form-floating:nth-last-child(n+3) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-<<<<<<< HEAD
 }
 .input-group.has-validation > :nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),
 .input-group.has-validation > .dropdown-toggle:nth-last-child(n+4),
@@ -10917,6 +10916,4 @@ header.masthead h1, header.masthead .h1 {
 footer.footer {
   padding-top: 4rem;
   padding-bottom: 4rem;
-=======
->>>>>>> e5334d3ba4d7f202fc800a60cd970cdb946440e9
 }
