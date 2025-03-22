@@ -34,3 +34,10 @@ enfin lancer le server :
 
 
 si a ce stade  ca marche pas encore bah bon courage que la chance soit avec toi 
+
+selenium :
+- télécharger et ouvrir Docker
+- docker run -d -p 4444:4444 --name selenium-server selenium/standalone-chrome
+- pip install selenium
+- execution test : python test_login.py (changer le nom du fichier selon le test)
+
