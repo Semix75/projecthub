@@ -11,6 +11,19 @@
 		</title>
 		{% block stylesheets %}
 			{{ vite_entry_link_tags('app') }}
+			<style>
+				/* Assurez-vous que le body prend toute la hauteur de la fenêtre */
+				body {
+					display: flex;
+					flex-direction: column;
+					min-height: 100vh;
+				}
+
+				/* Pour pousser le footer vers le bas */
+				.footer {
+					margin-top: auto;
+				}
+			</style>
 		{% endblock %}
 
 		{% block javascripts %}
@@ -65,5 +78,24 @@
 		</nav>
 
 		{% block body %}{% endblock %}
+
+		<!-- Footer -->
+		<footer class="footer bg-primary text-white py-4">
+			<div class="container text-center">
+				<p class="mb-1">© 2025 ProjectHub. Tous droits réservés.</p>
+				<p class="small">
+					<a href="#" class="text-white-50 mx-2">Mentions légales</a>
+					|
+					<a href="#" class="text-white-50 mx-2">Politique de confidentialité</a>
+					|
+					<a href="#" class="text-white-50 mx-2">Contact</a>
+				</p>
+			</div>
+		</footer>
+
+		<!-- Scripts -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="{{ asset('assets/js/scripts.js') }}"></script>
+		<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 	</body>
 </html>

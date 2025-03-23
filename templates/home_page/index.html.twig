@@ -1,34 +1,103 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue !{% endblock %}
+{% block title %}Bienvenue sur ProjectHub{% endblock %}
 
 {% block body %}
 	<!-- Masthead-->
-	<header class="masthead">
-		<div class="container position-relative">
-			<div class="row justify-content-center">
-				<div class="col-xl-6">
-					<div class="text-center text-white">
-						<h1 class="mb-5">Découvrez et choisissez le projet qui vous plaît !</h1>
+	<header class="masthead" style="padding-top: 8rem; padding-bottom: 8rem;">
+		<div class="overlay"></div>
+		<div class="container text-center text-white position-relative">
+			<h1 class="display-4 fw-bold">ProjectHub</h1>
+			<p class="lead fs-4">Découvrez et choisissez le projet qui vous plaît !</p>
+		</div>
+	</header>
+
+	<!-- Fonctionnalités clés -->
+	<section class="py-5 bg-light">
+		<div class="container">
+			<h2 class="text-center mb-5">Pourquoi utiliser ProjectHub ?</h2>
+			<div class="row text-center">
+				<div class="col-md-4 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">🎓 Choix des élèves</h5>
+							<p class="card-text">Les étudiants sélectionnent leurs 5 projets préférés en un clic.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">🧑‍🏫 Interface professeurs</h5>
+							<p class="card-text">Les enseignants proposent facilement leurs sujets avec un suivi complet.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">⚙️ Attribution intelligente</h5>
+							<p class="card-text">Un algorithme équitable affecte les projets selon les préférences et les places disponibles.</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</header>
-	<!-- Image Showcases-->
-	<section class="showcase">
-		<div class="container mt-4">
-			<h1 class="text-center">Bienvenue sur notre plateforme</h1>
+	</section>
 
-			<h2 class="mt-4">Derniers Projets</h2>
+	<!-- Comment ça marche ? -->
+	<section class="py-5 bg-white">
+		<div class="container">
+			<h2 class="text-center mb-5">Comment ça marche ?</h2>
+			<div class="row text-center">
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">1. Inscription</h5>
+							<p class="card-text">Créez votre compte étudiant ou enseignant en quelques clics.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">2. Proposer / Choisir</h5>
+							<p class="card-text">Proposez un projet ou sélectionnez ceux qui vous plaisent.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">3. Attribution</h5>
+							<p class="card-text">L’algorithme assigne les projets de façon optimale et équitable.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 shadow-sm border-0">
+						<div class="card-body">
+							<h5 class="card-title">4. Démarrage</h5>
+							<p class="card-text">Vous recevez votre projet et commencez à travailler dessus !</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Projets récents -->
+	<section class="py-5 bg-light">
+		<div class="container mt-5">
+			<h2 class="text-center mb-4">Derniers projets disponibles</h2>
 			<div class="row">
 				{% for projet in projets %}
 					<div class="col-md-4">
-						<div class="card mb-4 shadow-sm">
+						<div class="card mb-4 shadow-sm border-0">
 							<div class="card-body">
 								<h5 class="card-title">{{ projet.intitule }}</h5>
 								<p class="card-text">{{ projet.description[:100] }}...</p>
-								<a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-outline-dark rounded-pill px-4 py-2">Voir Détails</a>
+								<a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-outline-primary rounded-pill px-4 py-2 btn-sm">Voir Détails</a>
 							</div>
 						</div>
 					</div>
@@ -38,70 +107,10 @@
 			</div>
 
 			<div class="text-center mt-4">
-				<a href="{{ path('projets_index') }}" class="btn btn-outline-primary rounded-pill px-4 py-2 mb-4">Voir tous les projets</a>
+				<a href="{{ path('projets_index') }}" class="btn btn-outline-primary rounded-pill px-4 py-2 mb-4 btn-sm">Voir tous les projets</a>
 			</div>
 		</div>
 	</section>
-	<!-- Testimonials-->
-	<section class="testimonials text-center bg-light">
-		<div class="container">
-			<h2 class="mb-5">Développé par</h2>
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="testimonial-item mx-auto mb-5 mb-lg-0">
-						<img class="img-fluid rounded-circle mb-3" src="{{ asset('assets/img/adel.jpeg') }}" alt="..."/>
-						<h5>adel 3arbiPensif</h5>
-						<p class="font-weight-light mb-0">"This is fantastic! Thanks so much guys!"</p>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="testimonial-item mx-auto mb-5 mb-lg-0">
-						<img class="img-fluid rounded-circle mb-3" src="{{ asset('assets/img/sem.jpg') }}" alt="..."/>
-						<h5>Semiaouw</h5>
-						<p class="font-weight-light mb-0">"Bootstrap is amazing. I've been using it to create lots of super nice landing pages."</p>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="testimonial-item mx-auto mb-5 mb-lg-0">
-						<img class="img-fluid rounded-circle mb-3" src="{{ asset('assets/img/testimonials-3.jpg') }}" alt="..."/>
-						<h5>Sarah W.</h5>
-						<p class="font-weight-light mb-0">"Thanks so much for making these free resources available to us!"</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Footer-->
-	<footer class="footer bg-light">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6 h-100 text-center text-lg-start my-auto">
-					<ul class="list-inline mb-2">
-						<li class="list-inline-item">
-							<a href="#">About</a>
-						</li>
-						<li class="list-inline-item">⋅</li>
-						<li class="list-inline-item">
-							<a href="#">Contact</a>
-						</li>
-						<li class="list-inline-item">⋅</li>
-						<li class="list-inline-item">
-							<a href="#">Terms of Use</a>
-						</li>
-						<li class="list-inline-item">⋅</li>
-						<li class="list-inline-item">
-							<a href="#">Privacy Policy</a>
-						</li>
-					</ul>
-					<p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2023. All Rights Reserved.</p>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!-- Bootstrap core JS-->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- Core theme JS-->
-	<script src="{{ asset('assets/js/scripts.js') }}"></script>
-	<!-- SB Forms JS -->
-	<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+	
 {% endblock %}

@@ -14,8 +14,8 @@
                         <h5 class="card-title text-dark">{{ favori.projet.intitule }}</h5>
                         <p class="card-text text-muted">{{ favori.projet.description[:100] }}...</p>
                         <div class="d-flex justify-content-between">
-                            <a href="{{ path('projet_detail', { id: favori.projet.id }) }}" class="btn btn-outline-dark rounded-pill px-4 py-2">Voir Détails</a>
-                            <button class="btn btn-danger rounded-pill px-4 py-2 btn-remove-favori" data-id="{{ favori.id }}">Retirer</button>
+                            <a href="{{ path('projet_detail', { id: favori.projet.id }) }}" class="btn btn-outline-primary rounded-pill px-4 py-2">Voir Détails</a>
+                            <button class="btn btn-outline-danger rounded-pill px-4 py-2 btn-remove-favori" data-id="{{ favori.id }}">Retirer</button>
                         </div>
                     </div>
                 </div>
