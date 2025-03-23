@@ -11,8 +11,8 @@
             <div class="col-md-4 mb-4">
                 <div class="card border-light shadow-lg">
                     <div class="card-body">
-                        <h5 class="card-title text-dark">{{ projet.intitule }}</h5>
-                        <p class="card-text text-muted">{{ projet.description[:100] }}...</p>
+                        <h5 class="card-title">{{ projet.intitule }}</h5>
+                        <p class="card-text">{{ projet.description[:100] }}...</p>
                         <div class="d-flex justify-content-between">
                             <a href="{{ path('projet_detail', { id: projet.id }) }}" class="btn btn-outline-primary rounded-pill px-4 py-2">Voir Détails</a>
                             <button class="btn {% if projet in favoris %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-4 py-2" data-id="{{ projet.id }}">

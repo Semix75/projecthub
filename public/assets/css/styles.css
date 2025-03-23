@@ -3259,8 +3259,8 @@ textarea.form-control.is-invalid {
 
 .btn:hover {
   color: var(--bs-btn-hover-color);
-  background-color: rgba(81, 109, 142, 1);
-  border-color: rgba(81, 109, 142, 1);
+  background-color: var(--bs-btn-hover-bg);
+  border-color: var(--bs-btn-hover-border-color);
 }
 
 .btn-check+.btn:hover {
@@ -3316,16 +3316,16 @@ fieldset:disabled .btn {
   --bs-btn-bg: rgba(81, 109, 142, 0.8);
   --bs-btn-border-color: rgba(81, 109, 142, 0.8);
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: rgba(81, 109, 142, 1);
-  --bs-btn-hover-border-color: rgba(81, 109, 142, 1);
+  --bs-btn-hover-bg: rgb(70, 100, 133);
+  --bs-btn-hover-border-color: rgb(70, 100, 133);
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: rgba(81, 109, 142, 1);
-  --bs-btn-active-border-color: rgba(81, 109, 142, 1);
+  --bs-btn-active-bg: rgb(70, 100, 133);
+  --bs-btn-active-border-color: rgb(70, 100, 133);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: rgba(81, 109, 142, 0.8);
-  --bs-btn-disabled-border-color: rgba(81, 109, 142, 0.8);
+  --bs-btn-disabled-border-color: rgba(81, 109, 142, 0.5);
 }
 
 .btn-secondary {
