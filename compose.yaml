@@ -1,4 +1,31 @@
 services:
+  symfony:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+
   mercure:
     image: dunglas/mercure
     container_name: mercure
@@ -23,5 +50,6 @@ services:
       - mercure_config:/config
 
 volumes:
+  grafana-storage:
   mercure_data:
   mercure_config:
