@@ -20,6 +20,10 @@ class VoeuxAttributionService
     public function attribuerProjets(): void
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
+        $users = array_filter($users, fn(User $u) => $u->getRoles() === ['ROLE_USER']);
+        // foreach ($users as $user) {
+        //     echo "Utilisateur : " . $user->getId() . " - " . $user->getusername() . " (" . implode(', ', $user->getRoles()) . ")\n";
+        // }
         $projets = $this->entityManager->getRepository(Projet::class)->findAll();
         $voeux = $this->entityManager->getRepository(Voeux::class)->findAll();
         
