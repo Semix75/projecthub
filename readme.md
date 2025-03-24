@@ -39,5 +39,5 @@ selenium :
 - télécharger et ouvrir Docker
 - docker run -d -p 4444:4444 --name selenium-server selenium/standalone-chrome
 - pip install selenium
-- execution test : python test_login.py (changer le nom du fichier selon le test)
+- execution test : python testSelenium/test_login.py (changer le nom du fichier selon le test)
 
