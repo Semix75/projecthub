@@ -7,7 +7,7 @@ namespace Proxies\__CG__\App\Entity;
  */
 class Projet extends \App\Entity\Projet implements \Doctrine\ORM\Proxy\InternalProxy
 {
-    use \Symfony\Component\VarExporter\LazyGhostTrait {
+     use \Symfony\Component\VarExporter\LazyGhostTrait {
         initializeLazyObject as private;
         setLazyObjectAsInitialized as public __setInitialized;
         isLazyObjectInitialized as private;
@@ -34,7 +34,7 @@ class Projet extends \App\Entity\Projet implements \Doctrine\ORM\Proxy\InternalP
         'nbPlaceMax' => [parent::class, 'nbPlaceMax', null],
         'nbPlaceMin' => [parent::class, 'nbPlaceMin', null],
         'voeux' => [parent::class, 'voeux', null],
-    ];
+    ];
 
     public function __isInitialized(): bool
     {
