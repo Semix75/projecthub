@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Service\GroupManager;
+use App\Service\VoeuxAttributionService;
+use App\Controller\Admin\AttributionCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AttributionController extends AbstractController
@@ -28,5 +32,14 @@ class AttributionController extends AbstractController
         return $this->redirectToRoute('app_groups_list');
     }
     
+    #[Route('/attribuer', name: 'attribuer_voeux')]
+    public function attribuer(Request $request, VoeuxAttributionService $service): RedirectResponse
+    {
+        $service->attribuerProjets();
+        $this->addFlash('success', 'Attribution effectuée avec succès.');
+
+        return $this->redirect($request->headers->get('referer'));
+    }
+ 
     
 }
