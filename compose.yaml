@@ -25,6 +25,7 @@ services:
       - grafana-storage:/var/lib/grafana
     depends_on:
       - prometheus
+      - loki
 
   mercure:
     image: dunglas/mercure
@@ -48,6 +49,21 @@ services:
     volumes:
       - mercure_data:/data
       - mercure_config:/config
+
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config/loki-config.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+
+  consul:
+    image: hashicorp/consul
+    ports:
+      - "8500:8500"
+    command: "agent -dev -client=0.0.0.0"
+
 
 volumes:
   grafana-storage:
