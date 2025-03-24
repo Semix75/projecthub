@@ -7,6 +7,9 @@ use App\Entity\Voeux;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Entity\Conversation;
+use App\Entity\Message;
+use App\Entity\Friendship;
 
 class AppFixtures extends Fixture
 {
@@ -28,17 +31,64 @@ class AppFixtures extends Fixture
             $user->setEmail("user$i@example.com");
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
+            $user->setUsername("user$i");
+            $user->setBiographie("Biographie de l'utilisateur $i");
+            $user->setLastOnline(new \DateTimeImmutable());
+            $this->addReference("user_$i", $user);
+
 
             $manager->persist($user);
             $users[] = $user;
         }
+
+         // Création des conversations
+    $conversations = [];
+    for ($i = 1; $i <= 3; $i++) {
+        $conversation = new Conversation();
+        $conversation->setTitle("Conversation $i");
+        $conversation->setCreatedAt(new \DateTimeImmutable());
+        $conversation->setCreatedBy($users[array_rand($users)]);
+
+        // Ajout de participants
+        foreach (array_rand($users, 3) as $userIndex) {
+            $conversation->addParticipant($users[$userIndex]);
+        }
+
+        $manager->persist($conversation);
+        $conversations[] = $conversation;
+    }
+
+        // Création des messages
+        for ($i = 1; $i <= 10; $i++) {
+            $message = new Message();
+            $message->setContent("Message $i");
+            $message->setSendAt(new \DateTime());
+            $message->setIsRead(false);
+            $message->setSendBy($users[array_rand($users)]);
+            $message->setConversation($conversations[array_rand($conversations)]);
+    
+            $manager->persist($message);
+        }
+
+        // Création des amitiés
+    for ($i = 1; $i <= 5; $i++) {
+        $friendship = new Friendship();
+        $friendship->setRequester($users[array_rand($users)]);
+        $friendship->setReceiver($users[array_rand($users)]);
+        $friendship->setStatus(Friendship::STATUS_PENDING);
+        $friendship->setCreatedAt(new \DateTime());
+        $friendship->setUpdatedAt(new \DateTime());
+
+        $manager->persist($friendship);
+    }
 
         // Création des projets
         $projets = [];
         for ($i = 1; $i <= 3; $i++) {
             $projet = new Projet();
             $projet->setIntitule("Projet $i");
-            $projet->setNbPlace(rand(2, 5));
+            $projet->setNbPlaceMin(1);
+            $projet->setNbPlaceMax(5);            
             $projet->setDescription("Description du projet $i");
 
             $manager->persist($projet);
@@ -56,4 +106,6 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
+
+    
 }

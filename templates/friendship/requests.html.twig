@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h1 class="text-center mb-4">📩 Demandes d'amis</h1>
+
+        {% if requests is empty %}
+            <p class="text-muted text-center">Aucune demande d'ami reçue.</p>
+        {% else %}
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for request in requests %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
+                                    <span>{{ request.requester.email }}</span>
+                                </div>
+                                <div>
+                                    <a href="{{ path('app_accept_friend', { id: request.id }) }}" class="btn btn-success btn-sm">✅ Accepter</a>
+                                    <a href="{{ path('app_decline_friend', { id: request.id }) }}" 
+                                       onclick="return confirm('Voulez-vous vraiment refuser cette demande ?')"
+                                       class="btn btn-danger btn-sm">❌ Refuser</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <p class="text-center text-danger">⚠️ Vous devez être connecté pour voir cette page.</p>
+    {% endif %}
+
+    <!-- Bouton retour -->
+    <div class="text-center mt-4">
+        <a href="{{ path('home') }}" class="btn btn-outline-primary">🏠 Retour à l'accueil</a>
+    </div>
+</div>
+{% endblock %}

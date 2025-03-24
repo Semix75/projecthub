@@ -7,7 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 class AttributionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -19,8 +19,9 @@ class AttributionCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            TextField::new('user'),
-            TextField::new('projet'),
+            AssociationField::new('user')->setLabel('User'),
+            AssociationField::new('projet')->setLabel('Projet'),
+
         ];
     }
 }

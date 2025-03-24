@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">➕ Ajouter un ami</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-3">🔗 Invitation</h2>
+                    <form action="{{ path('app_add_friend') }}" method="post">
+                        <div class="mb-3">
+                            <label for="friend_identifier" class="form-label">📧 Email ou pseudo :</label>
+                            <input type="text" id="friend_identifier" name="friend_identifier" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">📩 Envoyer la demande</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton retour -->
+    <div class="text-center mt-4">
+        <a href="{{ path('app_friends_list') }}" class="btn btn-outline-secondary">🔙 Retour à la liste d'amis</a>
+    </div>
+</div>
+{% endblock %}
