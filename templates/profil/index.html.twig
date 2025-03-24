@@ -4,28 +4,37 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container d-flex justify-content-center align-items-center min-vh-100">
+	<div class="container d-flex justify-content-center align-items-center min-vh-100 mt-5 mb-5">
 		<div class="card shadow-lg p-4 d-flex flex-column justify-content-between" style="max-width: 600px; width: 100%; min-height: 80vh;">
 			<div class="card-body text-center">
 				<h1 class="card-title">Mon Profil</h1>
 				<hr>
 
+				{# Affichage de la photo de profil #}
+				{% if user.profilePicture %}
+					<img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="Photo de profil" class="img-fluid rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+				{% else %}
+					<img src="{{ asset('images/default-profile.png') }}" alt="Photo de profil" class="img-fluid rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+				{% endif %}
+
 				<table class="table table-bordered">
 					<tbody>
 						<tr>
-							<th class="bg-light">Prénom</th>
+							<th class="bg-light text-muted">Prénom</th>
 							<td>{{ user.firstname }}</td>
 						</tr>
 						<tr>
-							<th class="bg-light">Nom</th>
+							<th class="bg-light text-muted">Nom</th>
 							<td>{{ user.lastname }}</td>
 						</tr>
 						<tr>
-							<th class="bg-light">Email</th>
+							<th class="bg-light text-muted">Email</th>
 							<td>{{ user.email }}</td>
 						</tr>
 					</tbody>
 				</table>
+				<a href="{{ path('app_profil_edit') }}" class="btn btn-outline-primary mt-4 rounded-pill">Modifier mon profil</a>
+
 
 				<h2 class="mt-4">Mes Vœux</h2>
 				<hr>
@@ -39,14 +48,14 @@
 							</li>
 						{% endfor %}
 					</ul>
-					<a href="{{ path('app_voeux_edit') }}" class="btn btn-primary mt-4">Modifier mes vœux</a>
+					<a href="{{ path('app_voeux_edit') }}" class="btn btn-outline-primary mt-4 rounded-pill">Modifier mes vœux</a>
 				{% else %}
 					<p class="text-muted">Vous n'avez pas encore enregistré de vœux.</p>
-					<a href="{{ path('app_voeux') }}" class="btn btn-primary mt-2">Ajouter mes vœux</a>
+					<a href="{{ path('app_voeux') }}" class="btn btn-outline-primary mt-4 rounded-pill ">Ajouter mes vœux</a>
 				{% endif %}
 			</div>
-			<div class="text-center mt-auto">
-				<a class="btn btn-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+			<div class="text-center mt-3">
+				<a class="btn btn-outline-danger rounded-pill " href="{{ path('app_logout') }}">Déconnexion</a>
 			</div>
 		</div>
 	</div>
