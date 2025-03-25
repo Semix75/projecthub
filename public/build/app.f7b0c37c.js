@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[524],{28:(e,s,l)=>{l(336);console.log("Hello from app.js")}},e=>{e.O(0,[336,264],(()=>{return s=28,e(e.s=s);var s}));e.O()}]);
