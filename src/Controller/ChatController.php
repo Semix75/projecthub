@@ -6,9 +6,7 @@ use App\Entity\Conversation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface as TokenManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 final class ChatController extends AbstractController
 {
@@ -21,14 +19,14 @@ final class ChatController extends AbstractController
     }
 
     #[Route('/chat/{id}', name: 'app_chat')]
-public function chat(Conversation $conversation, TokenManagerInterface $jwtManager): Response
-{
-    $user = $this->getUser();
-    $token = $jwtManager->create($user);
+    public function chat(Conversation $conversation, JWTTokenManagerInterface $jwtManager): Response
+    {
+        $token = $jwtManager->create($this->getUser());
 
-    return $this->render('chat.html.twig', [
-        'conversation' => $conversation,
-        'jwt_token' => $token
-    ]);
-}
+        return $this->render('chat/chat.html.twig', [
+            'conversation' => $conversation,
+            'jwt_token' => $token
+        ]);
+    }
+
 }

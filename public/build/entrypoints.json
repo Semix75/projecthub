@@ -1,5 +1,12 @@
 {
   "entrypoints": {
+    "chat": {
+      "js": [
+        "/build/runtime.664c73b1.js",
+        "/build/338.c5083f25.js",
+        "/build/chat.890a7cde.js"
+      ]
+    },
     "app": {
       "js": [
         "/build/runtime.664c73b1.js",

@@ -15,6 +15,7 @@ Encore
     // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
+    .addEntry('chat', './assets/chat/app.js')
     /*
      * ENTRY CONFIG
      *
@@ -49,10 +50,6 @@ Encore
     // })
 
     // enables and configure @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = '3.23';
-    })
 
     // enables Sass/SCSS support
     .enableSassLoader()
