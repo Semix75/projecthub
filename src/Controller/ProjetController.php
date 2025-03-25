@@ -16,8 +16,13 @@ class ProjetController extends AbstractController
     #[Route('/projets', name: 'projets_index')]
     public function index(ProjetRepository $projetRepository, FavorisRepository $favorisRepository): Response
     {
+    
         $projets = $projetRepository->findAll();
         $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
         $favoris = $user ? $favorisRepository->findBy(['user' => $user]) : [];
 
         return $this->render('projet/index.html.twig', [
@@ -31,7 +36,12 @@ class ProjetController extends AbstractController
     public function detail(int $id, ProjetRepository $projetRepository): Response
     {
         $projet = $projetRepository->find($id);
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
 
+    
         if (!$projet) {
             throw $this->createNotFoundException("Projet non trouvé.");
         }

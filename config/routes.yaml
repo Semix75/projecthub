@@ -8,3 +8,10 @@ prometheus_metrics:
   path: /metrics
   controller: 'Artprima\PrometheusMetricsBundle\Controller\MetricsController::prometheus'
 
+app_error_404:
+    path: /erreur-404
+    controller: App\Controller\ErrorController::error404
+
+app_error_general:
+    path: /erreur
+    controller: App\Controller\ErrorController::generalError

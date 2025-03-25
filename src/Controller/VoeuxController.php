@@ -28,11 +28,13 @@ class VoeuxController extends AbstractController
     #[Route('/voeux', name: 'app_voeux')]
     public function new(Request $request): Response
     {
-        if (!$this->isGranted('ROLE_USER')) {
-            throw new AccessDeniedException('Vous devez être connecté en tant qu\'utilisateur pour accéder à cette page.');
-        }
-
         $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
+
         $existingVoeux = $this->entityManager->getRepository(Voeux::class)->findBy(['user' => $user]);
 
         if (!empty($existingVoeux)) {
@@ -102,11 +104,13 @@ class VoeuxController extends AbstractController
     #[Route('/voeux/edit', name: 'app_voeux_edit')]
     public function edit(Request $request): Response
     {
-        if (!$this->isGranted('ROLE_USER')) {
-            throw new AccessDeniedException('Vous devez être connecté.');
-        }
-
         $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
+
         $existingVoeux = $this->entityManager->getRepository(Voeux::class)->findBy(['user' => $user]);
 
         if (count($existingVoeux) !== 5) {

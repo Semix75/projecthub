@@ -41,3 +41,8 @@ selenium :
 - pip install selenium
 - execution test : python testSelenium/test_login.py (changer le nom du fichier selon le test)
 
+loki/consul :
+- je les ai téléchargé
+
+symfony mailer: 
+- composer require symfony/mailer

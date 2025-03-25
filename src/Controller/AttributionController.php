@@ -22,6 +22,12 @@ class AttributionController extends AbstractController
     #[Route('/generate-groups', name: 'app_generate_groups')]
     public function generateGroups(GroupManager $groupManager): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
         $groupManager->updateGroupsFromAttributions();
         $this->addFlash('success', 'Mise à jour des groupes effectuée !');
     

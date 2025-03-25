@@ -141,8 +141,7 @@ class FriendshipController extends AbstractController
     
         // Modifier le statut à "blocked" et enregistrer qui a bloqué
         $friendship->setStatus(Friendship::STATUS_BLOCKED);
-        $friendship->setBlockedBy($user->getId()); // ✅ Enregistre bien l'ID de l'utilisateur
-        $entityManager->flush();
+        $friendship->setBlockedBy($user->getId()); // ✅ Enregistre bien l'ID de l'utilisateur        $entityManager->flush();
     
         $this->addFlash('success', 'Utilisateur bloqué avec succès.');
         return $this->redirectToRoute('app_friends_list');

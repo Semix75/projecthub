@@ -43,6 +43,11 @@ class FavorisController extends AbstractController
     public function toggleFavoris(Projet $projet): Response
     {
         $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $favori = $this->favorisRepository->findOneBy(['user' => $user, 'projet' => $projet]);
 
         if ($favori) {
@@ -63,7 +68,13 @@ class FavorisController extends AbstractController
     #[Route('/favoris/remove/{id}', name: 'app_favoris_remove', methods: ['POST'])]
     public function remove(Favoris $favori): Response
     {
+
         $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
 
         if ($favori->getUser() !== $user) {
             return $this->json(['status' => 'error'], 400);

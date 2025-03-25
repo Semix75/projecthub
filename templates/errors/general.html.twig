@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur - ProjectHub{% endblock %}
+
+{% block body %}
+    <header class="masthead text-center text-white" style="padding-top: 8rem; padding-bottom: 8rem; background-color: #dc3545;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Oups ! Une erreur s'est produite.</h1>
+            <p class="lead fs-4">Nous travaillons pour résoudre le problème.</p>
+            <a href="{{ path('app_home_page') }}" class="btn btn-outline-light rounded-pill px-4 py-2 btn-lg">Retour à l'accueil</a>
+        </div>
+    </header>
+
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Que pouvez-vous faire ?</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">🔄 Réessayer</h5>
+                            <p class="card-text">Essayez d'actualiser la page.</p>
+                            <button class="btn btn-outline-primary rounded-pill px-4" onclick="window.location.reload();">Actualiser</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">📩 Contactez l'équipe</h5>
+                            <p class="card-text">Signalez-nous le problème.</p>
+                            <a href="{{ path('app_contact') }}" class="btn btn-outline-primary rounded-pill px-4">Nous contacter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
