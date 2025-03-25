@@ -26,5 +26,11 @@ services:
             $pathDir: "%kernel.project_dir%/public/assets"
             $env: "%kernel.environment%"
 
+    App\EventSubscriber\UserActivitySubscriber:
+        arguments:
+            $logger: '@monolog.logger.user_activity'
+            $requestStack: '@request_stack'
+        tags: ['kernel.event_subscriber']
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -1,10 +1,8 @@
 services:
   symfony:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: php:8.2-apache
     ports:
-      - "8000:8000"
+      - "8000:80"
     volumes:
       - .:/var/www/html
     depends_on:
@@ -63,6 +61,17 @@ services:
     ports:
       - "8500:8500"
     command: "agent -dev -client=0.0.0.0"
+
+  promtail:
+    image: grafana/promtail
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml
+      - .:/var/www/html  # Ajoute ceci pour que Promtail voie les logs Symfony
+    ports:
+      - "9080:9080"
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
 
 
 volumes:
