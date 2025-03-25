@@ -20,7 +20,7 @@ const config= {
   },
   esbuild : {
     jsxFactory: 'h',
-    jsxFrament: 'Fragment',
+    jsxFragment: 'Fragment',
     jsxInject: `import { h, Fragment } from 'preact'`,
   },
   base : '/assets/',
@@ -34,7 +34,7 @@ const config= {
         manualChunks : undefined,
       },
       input: {
-        app: resolve(__dirname, 'assets/app.js'),
+        app: resolve(__dirname, './assets/app.jsx'),
       }
     },
 

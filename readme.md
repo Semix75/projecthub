@@ -4,9 +4,9 @@ avant de lancer le projet lancer ces commandes :
 - yarn
 -  yarn add --dev @babel/preset-env
 - yarn add --dev @babel/plugin-transform-react-jsx
-- yarn add --dev @babel/core
--  yarn add --dev eslint-config-preact
--  yarn add --dev babel-plugin-jsx-pragmatic
+ yarn add --dev @babel/core
+ yarn add --dev eslint-config-preact
+ yarn add --dev babel-plugin-jsx-pragmatic
 - yarn dev 
 - crtl c 
 

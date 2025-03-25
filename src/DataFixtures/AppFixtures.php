@@ -28,10 +28,10 @@ class AppFixtures extends Fixture
             $user = new User();
             $user->setFirstname("Nom $i");
             $user->setLastname("Prénom $i");
-            $user->setEmail("user$i@example.com");
+            $user->setEmail("pipi$i@example.com");
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
-            $user->setUsername("user$i");
+            $user->setUsername("pipi$i");
             $user->setBiographie("Biographie de l'utilisateur $i");
             $user->setLastOnline(new \DateTimeImmutable());
             $this->addReference("user_$i", $user);
