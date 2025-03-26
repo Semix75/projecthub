@@ -1,65 +1,122 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-function ChatView({ conversationId, token }) {
-  const [messages, setMessages] = useState([]);
-  const [content, setContent] = useState("");
+const ChatView = ({ conversationId, token }) => {
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    fetch(`/api/conversations/${conversationId}/messages`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(setMessages);
-  }, [conversationId, token]);
+    // Récupération de l'utilisateur connecté
+    useEffect(() => {
+        fetch('/api/me', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Impossible de récupérer le user connecté');
+                }
+                return res.json();
+            })
+            .then(data => setUser(data))
+            .catch(err => console.error('Erreur récupération user :', err));
+    }, [token]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        content,
-        conversation: `/api/conversations/${conversationId}`,
-      }),
-    });
+    // Récupération des messages de la conversation
+    useEffect(() => {
+        fetch(`/api/conversations/${conversationId}/messages`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Erreur de chargement des messages');
+                }
+                return res.json();
+            })
+            .then(data => setMessages(data))
+            .catch(err => console.error('Erreur chargement messages :', err));
+    }, [conversationId, token]);
 
-    if (response.ok) {
-      const newMessage = await response.json();
-      setMessages((prev) => [...prev, newMessage]);
-      setContent("");
-    } else {
-      console.error("Échec de l'envoi");
-    }
-  };
+    // Abonnement à Mercure
+    useEffect(() => {
+        const url = new URL('http://localhost:3000/.well-known/mercure');
+        url.searchParams.append('topic', `/conversations/${conversationId}`);
 
-  return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Conversation #{conversationId}</h2>
-      <ul>
-        {messages.map((m) => (
-          <li key={m.id}>
-            <strong>{m.sendBy}</strong>: {m.content}
-          </li>
-        ))}
-      </ul>
+        const eventSource = new EventSource(url, { withCredentials: true });
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Écris ton message..."
-          required
-        />
-        <button type="submit">Envoyer</button>
-      </form>
-    </div>
-  );
-}
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setMessages(prev => [...prev, data]);
+        };
+
+        eventSource.onerror = (err) => {
+            console.error('Erreur EventSource Mercure :', err);
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, [conversationId]);
+
+    // Envoi du message
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!newMessage.trim()) return;
+
+        fetch('/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                content: newMessage,
+                conversation: `/api/conversations/${conversationId}`,
+            }),
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Erreur lors de l’envoi du message');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                setNewMessage('');
+                console.log("Message envoyé :", data);
+                // Le message arrivera automatiquement via Mercure
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    if (!user) return <p>Chargement de l’utilisateur...</p>;
+
+    return (
+        <div>
+            <h2>Conversation #{conversationId}</h2>
+            <ul>
+                {messages.map((msg) => (
+                    <li key={msg.id}>
+                        <strong>{msg.sendBy?.username ?? '??'}:</strong> {msg.content}
+                    </li>
+                ))}
+            </ul>
+
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Votre message..."
+                />
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    );
+};
 
 export default ChatView;

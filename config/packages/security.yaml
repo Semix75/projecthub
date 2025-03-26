@@ -33,6 +33,5 @@ security:
                 target: app_login
 
     access_control:
-        - { path: ^/api, roles: PUBLIC_ACCESS }
         - { path: ^/friends, roles: ROLE_USER }
         - { path: ^/groups, roles: ROLE_USER }

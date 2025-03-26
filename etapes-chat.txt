@@ -63,3 +63,105 @@ Avec ce plan, on peut commencer étape par étape et avancer proprement.
 
 
 commencons par ce que tu pense etre la premiere chose a faire et faisons ca etapes par etapes pour bien que tu m'explique bien et que je comprenne 
+
+
+
+
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@exemple.com", "password": "azerty"}'
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+const ChatView = ({ conversationId, token }) => {
+    const [messages, setMessages] = useState([]);
+    const [content, setContent] = useState('');
+    const [user, setUser] = useState(null);
+
+    // Récupère l'utilisateur courant
+    useEffect(() => {
+        fetch('/api/me', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(err => console.error('Erreur récupération user', err));
+    }, [token]);
+
+    // Récupère les messages de la conversation
+    useEffect(() => {
+        fetch(`/api/conversations/${conversationId}/messages`)
+          .then(res => res.json())
+          .then(data => setMessages(data))
+          .catch(err => console.error(err));
+      }, [conversationId]);
+    // Abonnement à Mercure
+    useEffect(() => {
+        const url = new URL('http://localhost:3000/.well-known/mercure');
+        url.searchParams.append('topic', `/conversations/${conversationId}`);
+
+        const eventSource = new EventSource(url, { withCredentials: true });
+
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setMessages((prevMessages) => [...prevMessages, data]);
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, [conversationId]);
+
+    // Envoi du message
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!content.trim()) return;
+
+        await fetch('/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                content,
+                conversation: `/api/conversations/${conversationId}`,
+            }),
+        });
+
+        setContent('');
+    };
+
+    return (
+        <div>
+            <h2>Conversation #{conversationId}</h2>
+            <ul>
+                {messages.map((msg) => (
+                    <li key={msg.id}>
+                        <strong>{msg.sendBy?.username}:</strong> {msg.content}
+                    </li>
+                ))}
+            </ul>
+
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Votre message..."
+                />
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    );
+};
+
+export default ChatView;
