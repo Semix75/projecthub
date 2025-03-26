@@ -30,10 +30,19 @@ class Projet
     #[ORM\Column(nullable: true)]
     private ?int $nbPlaceMax = null;
 
+    #[ORM\OneToMany(mappedBy: 'projet', targetEntity: Groupe::class)]
+    private Collection $groupes;
+
     public function __construct()
     {
-        $this->voeux = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
+
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
 
     public function getId(): ?int
     {
@@ -69,6 +78,7 @@ class Projet
         return $this->voeux;
     }
 
+
     public function addVoeu(Voeux $voeu): static
     {
         if (!$this->voeux->contains($voeu)) {
@@ -86,7 +96,7 @@ class Projet
             }
         }
         return $this;
-    } 
+    }
 
 
     public function __toString(): string

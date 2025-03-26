@@ -21,15 +21,15 @@
 					<tbody>
 						<tr>
 							<th class="bg-light text-muted">Prénom</th>
-							<td>{{ user.firstname }}</td>
+							<td class="text-primary">{{ user.firstname }}</td>
 						</tr>
 						<tr>
 							<th class="bg-light text-muted">Nom</th>
-							<td>{{ user.lastname }}</td>
+							<td class="text-primary">{{ user.lastname }}</td>
 						</tr>
 						<tr>
 							<th class="bg-light text-muted">Email</th>
-							<td>{{ user.email }}</td>
+							<td class="text-primary">{{ user.email }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -42,7 +42,7 @@
 					<ul class="list-group">
 						{% for voeu in voeux %}
 							<li class="list-group-item d-flex justify-content-between align-items-center">
-								<span class="fw-bold ms-2">{{ voeu.projet.intitule }}</span>
+								<span class="fw-bold ms-2 text-primary">{{ voeu.projet.intitule }}</span>
 								<span class="badge bg-primary rounded-pill">Priorité :
 									{{ voeu.priorite }}</span>
 							</li>

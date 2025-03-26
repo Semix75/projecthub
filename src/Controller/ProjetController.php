@@ -61,6 +61,7 @@ class ProjetController extends AbstractController
         return $this->render('projet/detail.html.twig', [
             'projet' => $projet,
             'favoris' => $favoris, 
+            'groupes' => $projet->getGroupes(),
         ]);
     }
 
