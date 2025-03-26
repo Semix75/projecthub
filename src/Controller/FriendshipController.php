@@ -22,6 +22,7 @@ class FriendshipController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
         // Récupérer les amitiés où l'utilisateur est impliqué (requester ou receiver)
@@ -141,6 +142,9 @@ class FriendshipController extends AbstractController
     
         // Modifier le statut à "blocked" et enregistrer qui a bloqué
         $friendship->setStatus(Friendship::STATUS_BLOCKED);
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException("Utilisateur non valide.");
+        }
         $friendship->setBlockedBy($user->getId()); // ✅ Enregistre bien l'ID de l'utilisateur
         $entityManager->flush();
     
@@ -157,7 +161,9 @@ class FriendshipController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
     
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
+
     
         // Récupérer les utilisateurs que j'ai bloqués
         $blockedByMe = $friendshipRepository->createQueryBuilder('f')
@@ -172,18 +178,20 @@ class FriendshipController extends AbstractController
         $blockedMe = $friendshipRepository->createQueryBuilder('f')
             ->where('f.status = :status')
             ->andWhere('f.blockedBy IS NOT NULL')
-            ->andWhere('f.blockedBy != :user')
+            ->andWhere('f.blockedBy != :user') // Filtrer ceux qui m'ont bloqué
             ->setParameter('status', Friendship::STATUS_BLOCKED)
             ->setParameter('user', $user->getId())
             ->getQuery()
             ->getResult();
     
+
         return $this->render('friendship/blocked.html.twig', [
             'blockedByMe' => $blockedByMe,
             'blockedMe' => $blockedMe,
         ]);
     }
     
+
 
 
     #[Route('/friends/unblock/{id}', name: 'app_unblock_friend', methods: ['POST'])]
@@ -196,7 +204,7 @@ class FriendshipController extends AbstractController
         $user = $this->getUser();
 
         // Vérifier que c'est bien le user connecté qui avait bloqué l'autre
-        if ($friendship->getBlockedBy() !== $user->getId()) {
+        if (!$user instanceof User || $friendship->getBlockedBy() !== $user->getId()) {
             throw $this->createAccessDeniedException("Vous ne pouvez pas débloquer cet utilisateur.");
         }
 

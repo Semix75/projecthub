@@ -43,6 +43,10 @@ class Conversation
     #[Groups(['conversation:read', 'conversation:write'])]
     private Collection $participants;
 
+    #[ORM\OneToMany(mappedBy: 'conversation', targetEntity: Message::class, cascade: ['persist', 'remove'])]
+    #[Groups(['conversation:read', 'conversation:write'])]
+    private Collection $messages;
+
 
     public function __construct()
     {

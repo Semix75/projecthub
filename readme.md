@@ -34,3 +34,6 @@ enfin lancer le server :
 
 
 si a ce stade  ca marche pas encore bah bon courage que la chance soit avec toi 
+
+Pour tester l'algo
+- composer require --dev liip/test-fixtures-bundle

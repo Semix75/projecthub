@@ -1,2 +1,2 @@
-@import '~bootstrap/scss/bootstrap'; // Import Bootstrap
-@import './styles';
+@use 'bootstrap/scss/bootstrap';
+@use './styles';

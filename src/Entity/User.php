@@ -99,7 +99,7 @@ private Collection $receivedFriendRequests;
         $this->roles = ['ROLE_USER'];
         $this->voeux = new ArrayCollection();
         $this->friendships = new ArrayCollection();
-        $this->receiverFriendship = new ArrayCollection();
+        $this->receivedFriendRequests = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->conversationParticipants = new ArrayCollection();

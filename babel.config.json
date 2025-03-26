@@ -1,0 +1,22 @@
+{
+    "presets": [
+       ["@babel/preset-env", {
+           "targets": {
+               "node": "current"
+           },
+           "module": false,
+           "useBuiltIns": false,
+           "corejs": null
+           }]
+    ],
+
+    "env": {
+        "test": {
+            "presets": [
+                ["@babel/preset-env"]
+            ]
+        }
+    
+    }
+
+}

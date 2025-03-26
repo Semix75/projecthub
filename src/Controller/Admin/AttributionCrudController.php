@@ -8,6 +8,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
 class AttributionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -24,4 +28,15 @@ class AttributionCrudController extends AbstractCrudController
 
         ];
     }
+
+public function configureActions(Actions $actions): Actions
+{
+    $attribuerAction = Action::new('attribuer', "Lancer l'attribution")
+        ->linkToRoute('attribuer_voeux')
+        ->createAsGlobalAction();
+
+    return $actions
+        ->add(Crud::PAGE_INDEX, $attribuerAction);
+}
+
 }
