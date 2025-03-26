@@ -33,23 +33,27 @@ class ProjetController extends AbstractController
 
 
     #[Route('/projet/{id}', name: 'projet_detail')]
-    public function detail(int $id, ProjetRepository $projetRepository): Response
+    public function detail(int $id, ProjetRepository $projetRepository, FavorisRepository $favorisRepository): Response
     {
         $projet = $projetRepository->find($id);
         $user = $this->getUser();
+    
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-
     
         if (!$projet) {
             throw $this->createNotFoundException("Projet non trouvé.");
         }
-
+    
+        $favoris = array_map(fn($favori) => $favori->getProjet(), $favorisRepository->findBy(['user' => $user]));
+    
         return $this->render('projet/detail.html.twig', [
             'projet' => $projet,
+            'favoris' => $favoris, 
         ]);
     }
+    
 
     #[Route('/favoris/add/{id}', name: 'favoris_add')]
     public function addFavoris(Projet $projet, EntityManagerInterface $entityManager, FavorisRepository $favorisRepository): Response

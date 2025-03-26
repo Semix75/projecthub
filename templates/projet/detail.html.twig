@@ -9,6 +9,41 @@
     <p><strong>Description :</strong> {{ projet.description }}</p>
     {# <p><strong>Places disponibles :</strong> {{ projet.nbPlace }}</p> #}
 
-    <a href="{{ path('projets_index') }}" class="btn btn-secondary">Retour à la liste</a>
+    <div class="d-flex gap-2">
+        <a href="{{ path('projets_index') }}" class="btn btn-outline-primary rounded-pill btn-sm me-3 ">Retour à la liste</a>
+        <button class="btn {% if projet in favoris %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill btn-sm " data-id="{{ projet.id }}">
+            {% if projet in favoris %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+        </button>
+    </div>
 </div>
+
+<script>
+    document.querySelectorAll('.btn-outline-danger, .btn-danger').forEach(button => {
+        button.addEventListener('click', function () {
+            let projetId = this.dataset.id;
+            let button = this;
+
+            fetch('/favoris/toggle/' + projetId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    button.classList.remove('btn-outline-danger');
+                    button.classList.add('btn-danger');
+                    button.textContent = 'Retirer des favoris';
+                } else {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-outline-danger');
+                    button.textContent = 'Ajouter aux favoris';
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+</script>
 {% endblock %}
