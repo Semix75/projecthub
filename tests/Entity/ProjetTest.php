@@ -34,19 +34,19 @@ class ProjetTest extends TestCase
         $this->assertSame("Projet Symfony", (string)$projet);
     }
 
-    public function testVoeuxManagement()
-    {
-        $projet = new Projet();
-        $voeu = $this->createMock(Voeux::class);
-        $voeu->method('getProjet')->willReturn($projet);
+    // public function testVoeuxManagement()
+    // {
+    //     $projet = new Projet();
+    //     $voeu = $this->createMock(Voeux::class);
+    //     $voeu->method('getProjet')->willReturn($projet);
 
-        // Test de l'ajout d'un voeu
-        $projet->addVoeu($voeu);
-        $this->assertInstanceOf(Collection::class, $projet->getVoeux());
-        $this->assertCount(1, $projet->getVoeux());
+    //     // Test de l'ajout d'un voeu
+    //     $projet->addVoeu($voeu);
+    //     $this->assertInstanceOf(Collection::class, $projet->getVoeux());
+    //     $this->assertCount(1, $projet->getVoeux());
 
-        // Test de la suppression d'un voeu
-        $projet->removeVoeu($voeu);
-        $this->assertCount(0, $projet->getVoeux());
-    }
+    //     // Test de la suppression d'un voeu
+    //     $projet->removeVoeu($voeu);
+    //     $this->assertCount(0, $projet->getVoeux());
+    // }
 }

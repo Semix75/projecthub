@@ -36,5 +36,28 @@ class VoeuxAttributionServiceTest extends KernelTestCase
         // Vérifier que des attributions ont bien été créées
         $this->assertNotEmpty($attributions, 'Le service devrait créer des attributions');
     }
+    public function testAucunEleveNonAffecte(): void
+    {
+        $this->service->attribuerProjets();
+
+        $em = static::getContainer()->get('doctrine')->getManager();
+
+        // Récupérer tous les utilisateurs avec le rôle "ROLE_USER"
+        $users = array_filter(
+            $em->getRepository(\App\Entity\User::class)->findAll(),
+            fn($user) => $user->getRoles() === ['ROLE_USER']
+        );
+
+        $attributions = $em->getRepository(Attribution::class)->findAll();
+        $userAffectes = array_map(fn($a) => $a->getUser()->getId(), $attributions);
+
+        foreach ($users as $user) {
+            $this->assertContains(
+                $user->getId(),
+                $userAffectes,
+                "L'utilisateur {$user->getUsername()} n'a pas été affecté à un projet"
+            );
+        }
+    }
 }
 ?>
