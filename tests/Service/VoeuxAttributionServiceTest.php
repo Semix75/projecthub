@@ -32,7 +32,6 @@ class VoeuxAttributionServiceTest extends KernelTestCase
         // Récupérer les attributions générées
         $em = static::getContainer()->get('doctrine')->getManager();
         $attributions = $em->getRepository(Attribution::class)->findAll();
-        dump($attributions);
 
         // Vérifier que des attributions ont bien été créées
         $this->assertNotEmpty($attributions, 'Le service devrait créer des attributions');

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Service;
 
 use App\Entity\User;
@@ -21,89 +20,95 @@ class VoeuxAttributionService
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
         $users = array_filter($users, fn(User $u) => $u->getRoles() === ['ROLE_USER']);
-        // foreach ($users as $user) {
-        //     echo "Utilisateur : " . $user->getId() . " - " . $user->getusername() . " (" . implode(', ', $user->getRoles()) . ")\n";
-        // }
+
         $projets = $this->entityManager->getRepository(Projet::class)->findAll();
         $voeux = $this->entityManager->getRepository(Voeux::class)->findAll();
-        
-        // On réorganise les voeux par utilisateur
+
+        // Organiser les voeux par utilisateur
         $voeuxParUser = [];
         foreach ($voeux as $voeu) {
             $userId = $voeu->getUser()->getId();
             $voeuxParUser[$userId][$voeu->getPriorite() - 1] = $voeu->getProjet()->getId();
         }
-        
-        // On prépare les élèves avec leurs voeux
+
+        // Élèves : [id => (object avec entity, voeux, projet)]
         $eleves = [];
         foreach ($users as $user) {
             $id = $user->getId();
-            $eleves[$id] = (object) [
+            $eleves[$id] = (object)[
                 'entity' => $user,
                 'voeux' => $voeuxParUser[$id] ?? [],
                 'projet' => null
             ];
         }
-        
-        // On prépare les projets avec leurs contraintes
+
+        // Projets : [id => (object avec entity, min, max, eleves)]
         $projetsMap = [];
         foreach ($projets as $projet) {
             $id = $projet->getId();
-            $projetsMap[$id] = (object) [
+            $projetsMap[$id] = (object)[
                 'entity' => $projet,
                 'min' => $projet->getNbPlaceMin(),
                 'max' => $projet->getNbPlaceMax(),
                 'eleves' => []
             ];
         }
-        // Phase 1 : Attribution initiale en respectant les vœux
+
+        // === PHASE 1 : Attribution initiale en fonction des vœux ===
         foreach ($eleves as $id => $eleve) {
             foreach ($eleve->voeux as $projetId) {
-                if (count($projetsMap[$projetId]->eleves) < $projetsMap[$projetId]->max) {
-                    $projetsMap[$projetId]->eleves[] = $id;
-                    $eleve->projet = $projetId;
+                if ($this->peutAccueillir($projetsMap[$projetId])) {
+                    $this->affecterProjet($projetsMap, $eleves, $id, $projetId);
                     break;
                 }
             }
         }
-        // Phase 2 : Attribution des étudiants non-attribués à un projet disponible
+
+        // === PHASE 2 : Affectation forcée si élève non attribué ===
         foreach ($eleves as $id => $eleve) {
             if ($eleve->projet === null) {
+                $affecte = false;
+
                 foreach ($projetsMap as $projetId => $projet) {
-                    if (count($projet->eleves) < $projet->max) {
-                        $projet->eleves[] = $id;
-                        $eleve->projet = $projetId;
+                    if ($this->estSousEffectif($projet) && $this->peutAccueillir($projet)) {
+                        $this->affecterProjet($projetsMap, $eleves, $id, $projetId);
+                        $affecte = true;
                         break;
                     }
                 }
-            }
-        }
-        // Phase 3 : Rééquilibrage des projets sous-effectifs
-        foreach ($projetsMap as $projetId => $projet) {
-            if (count($projet->eleves) < $projet->min) {
-                foreach ($projetsMap as $surProjetId => $surProjet) {
-                    if ($projetId === $surProjetId) continue;
 
-                    if (count($surProjet->eleves) > $surProjet->min) {
-                        foreach ($surProjet->eleves as $key => $eleveId) {
-                            if (in_array($projetId, $eleves[$eleveId]->voeux)) {
-                                // Transfert
-                                $projet->eleves[] = $eleveId;
-                                unset($surProjet->eleves[$key]);
-                                $projetsMap[$surProjetId]->eleves = array_values($surProjet->eleves); // réindexer
-                                $eleves[$eleveId]->projet = $projetId;
-                                break 2;
-                            }
+                if (!$affecte) {
+                    foreach ($projetsMap as $projetId => $projet) {
+                        if ($this->peutAccueillir($projet)) {
+                            $this->affecterProjet($projetsMap, $eleves, $id, $projetId);
+                            break;
                         }
                     }
                 }
             }
         }
-        // Phase 4 : Réaffectation des étudiants des projets toujours sous-effectifs
-        $elevesAReaffecter = [];
 
+        // === PHASE 3 : Transfert ciblé vers projets sous-effectifs ===
         foreach ($projetsMap as $projetId => $projet) {
-            if (count($projet->eleves) < $projet->min) {
+            if ($this->estSousEffectif($projet)) {
+                foreach ($projetsMap as $srcId => $srcProjet) {
+                    if ($projetId === $srcId || count($srcProjet->eleves) <= $srcProjet->min) continue;
+                    foreach ($srcProjet->eleves as $key => $eleveId) {
+                        if (in_array($projetId, $eleves[$eleveId]->voeux)) {
+                            unset($srcProjet->eleves[$key]);
+                            $srcProjet->eleves = array_values($srcProjet->eleves);
+                            $this->affecterProjet($projetsMap, $eleves, $eleveId, $projetId);
+                            break 2;
+                        }
+                    }
+                }
+            }
+        }
+
+        // === PHASE 4 : Suppression des projets invalides et réaffectation ===
+        $elevesAReaffecter = [];
+        foreach ($projetsMap as $projetId => $projet) {
+            if ($this->estSousEffectif($projet)) {
                 foreach ($projet->eleves as $eleveId) {
                     $eleves[$eleveId]->projet = null;
                     $elevesAReaffecter[] = $eleveId;
@@ -112,47 +117,76 @@ class VoeuxAttributionService
             }
         }
 
-        // Réaffectation des étudiants libérés
         foreach ($elevesAReaffecter as $eleveId) {
             $reaffecte = false;
-
-            // 1. Tenter via les vœux
             foreach ($eleves[$eleveId]->voeux as $voeuProjetId) {
                 $p = $projetsMap[$voeuProjetId];
-                if (
-                    count($p->eleves) < $p->max &&
-                    count($p->eleves) + 1 >= $p->min
-                ) {
-                    $p->eleves[] = $eleveId;
-                    $eleves[$eleveId]->projet = $voeuProjetId;
+                if ($this->peutAccueillir($p) && (count($p->eleves) + 1 >= $p->min)) {
+                    $this->affecterProjet($projetsMap, $eleves, $eleveId, $voeuProjetId);
                     $reaffecte = true;
                     break;
                 }
             }
-
-            // 2. Sinon, placement forcé dans un projet valide
             if (!$reaffecte) {
                 foreach ($projetsMap as $projetId => $p) {
-                    if (
-                        count($p->eleves) < $p->max &&
-                        count($p->eleves) + 1 >= $p->min
-                    ) {
-                        $p->eleves[] = $eleveId;
-                        $eleves[$eleveId]->projet = $projetId;
+                    if ($this->peutAccueillir($p) && (count($p->eleves) + 1 >= $p->min)) {
+                        $this->affecterProjet($projetsMap, $eleves, $eleveId, $projetId);
                         break;
                     }
                 }
             }
         }
 
+        // === PHASE 4 BIS : Regroupement forcé avec déplacements ===
+        $nonAffectes = array_filter($eleves, fn($e) => $e->projet === null);
+        $nbNonAffectes = count($nonAffectes);
 
+        if ($nbNonAffectes > 0) {
+            $meilleurProjetId = null;
+            $meilleurCout = PHP_INT_MAX;
+            $meilleursDeplacables = [];
 
+            foreach ($projetsMap as $id => $projet) {
+                if (count($projet->eleves) > 0) continue;
 
-        
-        // Suppression des anciennes attributions
+                $nbManquants = max(0, $projet->min - $nbNonAffectes);
+                if ($nbNonAffectes + $nbManquants > $projet->max) continue;
+
+                $deplacables = [];
+                foreach ($eleves as $eid => $e) {
+                    if ($e->projet !== null && $e->projet !== $id) {
+                        $rang = array_search($e->projet, $e->voeux);
+                        if ($rang === false || $rang >= 3) {
+                            $deplacables[] = $eid;
+                            if (count($deplacables) === $nbManquants) break;
+                        }
+                    }
+                }
+
+                if (count($deplacables) === $nbManquants && $nbManquants < $meilleurCout) {
+                    $meilleurProjetId = $id;
+                    $meilleurCout = $nbManquants;
+                    $meilleursDeplacables = $deplacables;
+                }
+            }
+
+            if ($meilleurProjetId !== null) {
+                foreach ($meilleursDeplacables as $eid) {
+                    $ancien = $eleves[$eid]->projet;
+                    $projetsMap[$ancien]->eleves = array_values(array_filter($projetsMap[$ancien]->eleves, fn($v) => $v !== $eid));
+                    $this->affecterProjet($projetsMap, $eleves, $eid, $meilleurProjetId);
+                }
+
+                foreach ($nonAffectes as $e) {
+                    $eid = $e->entity->getId();
+                    $this->affecterProjet($projetsMap, $eleves, $eid, $meilleurProjetId);
+                }
+            }
+        }
+
+        // === PERSISTANCE DES ATTRIBUTIONS ===
         $this->entityManager->createQuery('DELETE FROM App\Entity\Attribution')->execute();
 
-        // Enregistrement des nouvelles attributions
         foreach ($eleves as $eleve) {
             if ($eleve->projet !== null) {
                 $attribution = new Attribution();
@@ -163,6 +197,24 @@ class VoeuxAttributionService
         }
 
         $this->entityManager->flush();
+    }
 
+    // === Méthodes privées utilitaires ===
+
+    private function peutAccueillir(object $projet): bool
+    {
+        return count($projet->eleves) < $projet->max;
+    }
+
+    private function estSousEffectif(object $projet): bool
+    {
+        return count($projet->eleves) < $projet->min;
+    }
+
+    private function affecterProjet(array &$projets, array &$eleves, int $eleveId, int $projetId): void
+    {
+        $projets[$projetId]->eleves[] = $eleveId;
+        $eleves[$eleveId]->projet = $projetId;
     }
 }
+?>
