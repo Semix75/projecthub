@@ -66,7 +66,7 @@ services:
     image: grafana/promtail
     volumes:
       - ./promtail-config.yml:/etc/promtail/config.yml
-      - .:/var/www/html  # Ajoute ceci pour que Promtail voie les logs Symfony
+      - .:/var/www/html 
     ports:
       - "9080:9080"
     command: -config.file=/etc/promtail/config.yml
