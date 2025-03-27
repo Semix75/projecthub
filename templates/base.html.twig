@@ -1,54 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr-FR">
 	<head>
+		<!-- Définition de l'encodage des caractères -->
 		<meta charset="utf-8"/>
+		<!-- Configuration pour un affichage responsive -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<!-- Description et auteur de la page -->
 		<meta name="description" content=""/>
 		<meta name="author" content=""/>
+		
+		<!-- Favicon pour différents appareils -->
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}?v={{ random() }}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/favicon/favicon-32x32.png') }}?v={{ random() }}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/favicon/favicon-16x16.png') }}?v={{ random() }}">
+		<link rel="manifest" href="{{ asset('assets/favicon/site.webmanifest') }}">
+
+		<!-- Titre de la page, modifiable via un bloc Twig -->
 		<title>
-			{% block title %}Welcome!
+			{% block title %}ProjectHub
 			{% endblock %}
 		</title>
+
+		<!-- Bloc pour inclure des styles supplémentaires -->
 		{% block stylesheets %}
-			{{ encore_entry_link_tags('app_styles') }}
+			<!-- Inclusion des styles via Vite -->
+			{{ vite_entry_link_tags('app') }}
+			<style>
+				/* Assurez-vous que le body prend toute la hauteur de la fenêtre */
+				body {
+					display: flex;
+					flex-direction: column;
+					min-height: 100vh;
+				}
+
+				/* Pour pousser le footer vers le bas */
+				.footer {
+					margin-top: auto;
+				}
+			</style>
 		{% endblock %}
 
-		<!-- Bootstrap icons-->
-		<link
-		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css"/>
-		<!-- Google fonts-->
-		<link
-		href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"/>
-		<!-- Core theme CSS (includes Bootstrap)-->
+		<!-- Bloc pour inclure des scripts JavaScript -->
+		{% block javascripts %}
+			<script type="module" src="http://localhost:5173/assets/app.js"></script>
+		{% endblock %}
+
+		<!-- Liens vers des ressources externes -->
+		<!-- Icônes Bootstrap -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css"/>
+		<!-- Polices Google -->
+		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"/>
+		<!-- Fichier CSS principal -->
+		<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet"/>
 	</head>
 
 	<body>
-
-
-		<!-- Navigation-->
-		<nav class="navbar navbar-light bg-light static-top">
+		<!-- Barre de navigation -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
 			<div class="container">
+				<!-- Logo ou nom du site -->
 				<a class="navbar-brand" href="/">ProjectHub</a>
-				<div class="d-flex gap-2">
-					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-						<a class="btn btn-primary" href="#">Mes favoris</a>
-						<a class="btn btn-primary" href="{{ path('app_profil') }}">Mon profil</a>
-						<a class="btn btn-primary" href="{{ path('app_friends_list') }}">Liste d'amis</a>
-						<a class="btn btn-primary" href="{{ path('app_groups_list') }}">Groupe</a>
-					{% else %}
-						<a class="btn btn-primary" href="{{ path('app_login') }}">Connexion</a>
-						<a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
-					{% endif %}
+				<!-- Bouton pour le menu mobile -->
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- Menu de navigation -->
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto">
+						<!-- Affichage des liens en fonction de l'authentification de l'utilisateur -->
+						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_favoris') }}">Mes favoris</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_friends_list') }}">Liste d'amis</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_groups_list') }}">Groupe</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_profil') }}">Mon profil</a>
+							</li>
+						{% else %}
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
+							</li>
+						{% endif %}
+					</ul>
 				</div>
 			</div>
 		</nav>
 
-
+		<!-- Bloc principal pour le contenu de la page -->
 		{% block body %}{% endblock %}
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
+
+		<!-- Pied de page -->
+		<footer class="footer bg-footer text-white py-4">
+			<div class="container text-center">
+				<p class="mb-1">© 2025 ProjectHub. Tous droits réservés.</p>
+				<p class="small">
+					<a href="#" class="text-white-50 mx-2">Mentions légales</a>
+					|
+					<a href="#" class="text-white-50 mx-2">Politique de confidentialité</a>
+					|
+					<a href="{{ path('app_contact') }}" class="text-white-50 mx-2">Contact</a>
+				</p>
+			</div>
+		</footer>
+
+		<!-- Scripts -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="{{ asset('assets/js/scripts.js') }}"></script>
+		<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 	</body>
-
-
 </html>

@@ -43,4 +43,4 @@ const config= {
   root
 };
 
-module.exports = config;
+export default config;

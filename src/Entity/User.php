@@ -32,6 +32,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilePicture = null;
+
+
     /**
      * @var string The hashed password
      */
@@ -53,19 +57,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $biographie = null;
 
-    
+
     #[Groups(['conversation:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $username = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'users')]
-private Collection $groupes;
+    private Collection $groupes;
 
     /**
- * @var Collection<int, Friendship>
- */
-#[ORM\OneToMany(targetEntity: Friendship::class, mappedBy: 'receiver')]
-private Collection $receivedFriendRequests;
+     * @var Collection<int, Friendship>
+     */
+    #[ORM\OneToMany(targetEntity: Friendship::class, mappedBy: 'receiver')]
+    private Collection $receivedFriendRequests;
 
     /**
      * @var Collection<int, Friendship>
@@ -103,7 +107,6 @@ private Collection $receivedFriendRequests;
         $this->messages = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->conversationParticipants = new ArrayCollection();
-
     }
 
     #[Groups(['conversation:read'])]
@@ -126,6 +129,17 @@ private Collection $receivedFriendRequests;
         return $this;
     }
 
+    public function getProfilePicture(): ?string
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(?string $profilePicture): static
+    {
+        $this->profilePicture = $profilePicture;
+        return $this;
+    }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -144,7 +158,7 @@ private Collection $receivedFriendRequests;
         $roles = $this->roles;
         // garantir que chaque utilisateur a au moins le rôle ROLE_USER
         $roles[] = 'ROLE_USER';
-    
+
         return array_unique($roles);
     }
 
@@ -154,7 +168,7 @@ private Collection $receivedFriendRequests;
             $roles[] = 'ROLE_USER';
         }
         $this->roles = $roles;
-    
+
         return $this;
     }
 
@@ -207,196 +221,194 @@ private Collection $receivedFriendRequests;
         return $this;
     }
     /**
-         * @see UserInterface
-         */
-       
-        public function __toString(): string
-        {
-            return $this->firstname . " " . $this->lastname ; 
-        }
+     * @see UserInterface
+     */
+
+    public function __toString(): string
+    {
+        return $this->firstname . " " . $this->lastname;
+    }
 
 
-    
-        public function getVoeux(): Collection
-        {
-            return $this->voeux;
+
+    public function getVoeux(): Collection
+    {
+        return $this->voeux;
+    }
+
+    public function addVoeu(Voeux $voeu): static
+    {
+        if (!$this->voeux->contains($voeu)) {
+            $this->voeux->add($voeu);
+            $voeu->setUser($this);
         }
-    
-        public function addVoeu(Voeux $voeu): static
-        {
-            if (!$this->voeux->contains($voeu)) {
-                $this->voeux->add($voeu);
-                $voeu->setUser($this);
+        return $this;
+    }
+
+    public function removeVoeu(Voeux $voeu): static
+    {
+        if ($this->voeux->removeElement($voeu)) {
+            if ($voeu->getUser() === $this) {
+                $voeu->setUser(null);
             }
-            return $this;
         }
-    
-        public function removeVoeu(Voeux $voeu): static
-        {
-            if ($this->voeux->removeElement($voeu)) {
-                if ($voeu->getUser() === $this) {
-                    $voeu->setUser(null);
-                }
+        return $this;
+    }
+
+    public function getLastOnline(): ?\DateTimeInterface
+    {
+        return $this->lastOnline;
+    }
+
+    public function setLastOnline(?\DateTimeInterface $lastOnline): static
+    {
+        $this->lastOnline = $lastOnline;
+
+        return $this;
+    }
+
+    public function getBiographie(): ?string
+    {
+        return $this->biographie;
+    }
+
+    public function setBiographie(?string $biographie): static
+    {
+        $this->biographie = $biographie;
+
+        return $this;
+    }
+
+    #[Groups(['conversation:read'])]
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Friendship>
+     */
+    public function getFriendships(): Collection
+    {
+        return $this->friendships;
+    }
+
+    public function removeReceivedFriendRequest(Friendship $friendship): static
+    {
+        if ($this->receivedFriendRequests->removeElement($friendship)) {
+            if ($friendship->getReceiver() === $this) {
+                $friendship->setReceiver(null);
             }
-            return $this;
+        }
+        return $this;
+    }
+
+
+    public function getReceivedFriendRequests(): Collection
+    {
+        return $this->receivedFriendRequests;
+    }
+    public function addReceivedFriendRequest(Friendship $friendship): static
+    {
+        if (!$this->receivedFriendRequests->contains($friendship)) {
+            $this->receivedFriendRequests->add($friendship);
+            $friendship->setReceiver($this);
+        }
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSendBy($this);
         }
 
-        public function getLastOnline(): ?\DateTimeInterface
-        {
-            return $this->lastOnline;
-        }
+        return $this;
+    }
 
-        public function setLastOnline(?\DateTimeInterface $lastOnline): static
-        {
-            $this->lastOnline = $lastOnline;
-
-            return $this;
-        }
-
-        public function getBiographie(): ?string
-        {
-            return $this->biographie;
-        }
-
-        public function setBiographie(?string $biographie): static
-        {
-            $this->biographie = $biographie;
-
-            return $this;
-        }
-
-        #[Groups(['conversation:read'])]
-        public function getUsername(): ?string
-        {
-            return $this->username;
-        }
-
-        public function setUsername(?string $username): static
-        {
-            $this->username = $username;
-
-            return $this;
-        }
-
-        /**
-         * @return Collection<int, Friendship>
-         */
-        public function getFriendships(): Collection
-        {
-            return $this->friendships;
-        }
-
-        public function removeReceivedFriendRequest(Friendship $friendship): static
-        {
-            if ($this->receivedFriendRequests->removeElement($friendship)) {
-                if ($friendship->getReceiver() === $this) {
-                    $friendship->setReceiver(null);
-                }
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSendBy() === $this) {
+                $message->setSendBy(null);
             }
-            return $this;
         }
-        
 
-        public function getReceivedFriendRequests(): Collection
-        {
-            return $this->receivedFriendRequests;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->setCreatedBy($this);
         }
-        public function addReceivedFriendRequest(Friendship $friendship): static
-        {
-            if (!$this->receivedFriendRequests->contains($friendship)) {
-                $this->receivedFriendRequests->add($friendship);
-                $friendship->setReceiver($this);
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            // set the owning side to null (unless already changed)
+            if ($conversation->getCreatedBy() === $this) {
+                $conversation->setCreatedBy(null);
             }
-            return $this;
-        }
-    
-
-        /**
-         * @return Collection<int, Message>
-         */
-        public function getMessages(): Collection
-        {
-            return $this->messages;
         }
 
-        public function addMessage(Message $message): static
-        {
-            if (!$this->messages->contains($message)) {
-                $this->messages->add($message);
-                $message->setSendBy($this);
-            }
+        return $this;
+    }
 
-            return $this;
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversationParticipants(): Collection
+    {
+        return $this->conversationParticipants;
+    }
+
+    public function addConversationParticipant(Conversation $conversationParticipant): static
+    {
+        if (!$this->conversationParticipants->contains($conversationParticipant)) {
+            $this->conversationParticipants->add($conversationParticipant);
+            $conversationParticipant->addParticipant($this);
         }
 
-        public function removeMessage(Message $message): static
-        {
-            if ($this->messages->removeElement($message)) {
-                // set the owning side to null (unless already changed)
-                if ($message->getSendBy() === $this) {
-                    $message->setSendBy(null);
-                }
-            }
+        return $this;
+    }
 
-            return $this;
+    public function removeConversationParticipant(Conversation $conversationParticipant): static
+    {
+        if ($this->conversationParticipants->removeElement($conversationParticipant)) {
+            $conversationParticipant->removeParticipant($this);
         }
 
-        /**
-         * @return Collection<int, Conversation>
-         */
-        public function getConversations(): Collection
-        {
-            return $this->conversations;
-        }
-
-        public function addConversation(Conversation $conversation): static
-        {
-            if (!$this->conversations->contains($conversation)) {
-                $this->conversations->add($conversation);
-                $conversation->setCreatedBy($this);
-            }
-
-            return $this;
-        }
-
-        public function removeConversation(Conversation $conversation): static
-        {
-            if ($this->conversations->removeElement($conversation)) {
-                // set the owning side to null (unless already changed)
-                if ($conversation->getCreatedBy() === $this) {
-                    $conversation->setCreatedBy(null);
-                }
-            }
-
-            return $this;
-        }
-
-        /**
-         * @return Collection<int, Conversation>
-         */
-        public function getConversationParticipants(): Collection
-        {
-            return $this->conversationParticipants;
-        }
-
-        public function addConversationParticipant(Conversation $conversationParticipant): static
-        {
-            if (!$this->conversationParticipants->contains($conversationParticipant)) {
-                $this->conversationParticipants->add($conversationParticipant);
-                $conversationParticipant->addParticipant($this);
-            }
-
-            return $this;
-        }
-
-        public function removeConversationParticipant(Conversation $conversationParticipant): static
-        {
-            if ($this->conversationParticipants->removeElement($conversationParticipant)) {
-                $conversationParticipant->removeParticipant($this);
-            }
-
-            return $this;
-        }
-
-
+        return $this;
+    }
 }

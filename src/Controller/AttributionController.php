@@ -26,20 +26,34 @@ class AttributionController extends AbstractController
     #[Route('/generate-groups', name: 'app_generate_groups')]
     public function generateGroups(GroupManager $groupManager): Response
     {
+        // Récupère l'utilisateur actuellement connecté
+        $user = $this->getUser();
+
+        // Si aucun utilisateur n'est connecté, redirige vers la page de connexion
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $groupManager->updateGroupsFromAttributions();
         $this->addFlash('success', 'Mise à jour des groupes effectuée !');
-    
+
         return $this->redirectToRoute('app_groups_list');
     }
-    
+
     #[Route('/attribuer', name: 'attribuer_voeux')]
     public function attribuer(Request $request, VoeuxAttributionService $service): RedirectResponse
     {
+        // Récupère l'utilisateur actuellement connecté
+        $user = $this->getUser();
+
+        // Si aucun utilisateur n'est connecté, redirige vers la page de connexion
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $service->attribuerProjets();
         $this->addFlash('success', 'Attribution effectuée avec succès.');
 
         return $this->redirect($request->headers->get('referer'));
     }
- 
-    
 }

@@ -6,6 +6,9 @@ Avant de lancer le projet, exécutez les commandes suivantes :
 
 ### 📌 Pour **Windows (cmd/Powershell)**  
 ```powershell
+composer update --ignore-platform-reqs --with-dependencies
+composer require lexik/jwt-authentification-bundle
+si pb avec sodium: composer install --ignore-platform-req=ext-sodium
 composer install  # Installation des dépendances PHP  
 npm install       # Installation des dépendances Node.js  
 yarn             # Installation des paquets avec Yarn  
@@ -30,7 +33,10 @@ yarn add --dev babel-plugin-jsx-pragmatic
 ### 🔧 Démarrage du serveur de développement  
 **Windows (cmd/Powershell) & Linux/macOS**  
 ```bash
-yarn dev  # Lance le serveur de développement  
+yarn dev  # Lance le serveur de développement 
+si pb popperjs : yarn add @popperjs/core
+si pb sass-embedded:yarn add -D sass-embedded
+refaire yarn dev 
 ```
 (Pour arrêter, utilisez `CTRL + C`)  
 

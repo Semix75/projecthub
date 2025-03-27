@@ -5,7 +5,7 @@
 
 {% block body %}
 	<div class="container mt-5">
-		<h1 class="text-center text-danger">🚫 Liste des utilisateurs bloqués</h1>
+		<h1 class="text-center mb-5">Liste des utilisateurs bloqués</h1>
 
 		<div
 			class="row mt-4">
@@ -19,14 +19,21 @@
 						{% if blockedByMe|length > 0 %}
 							<ul class="list-group">
 								{% for friendship in blockedByMe %}
-									<li class="list-group-item d-flex justify-content-between align-items-center">
-										👤
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center">
+										<!-- Affichage de la photo de profil -->
+										{% if friendship.requester.profilePicture %}
+											<img src="{{ asset('uploads/profile_pictures/' ~ friendship.requester.profilePicture) }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+										{% else %}
+											<img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+										{% endif %}
 										{{ friendship.requester.id == app.user.id ? friendship.receiver.username : friendship.requester.username }}
 										<form action="{{ path('app_unblock_friend', {id: friendship.id}) }}" method="post">
 											<button type="submit" class="btn btn-sm btn-outline-success">Débloquer</button>
 										</form>
 									</li>
 								{% endfor %}
+
 							</ul>
 						{% else %}
 							<p class="text-muted">Aucun utilisateur bloqué.</p>
@@ -59,8 +66,11 @@
 			</div>
 		</div>
 
-		<div class="text-center mt-4">
-			<a href="{{ path('app_friends_list') }}" class="btn btn-outline-secondary">Retour à la liste d'amis</a>
+		<!-- Bouton retour centré -->
+		<div class="text-center mt-5">
+			<a href="{{ path('app_friends_list') }}" class="btn btn-outline-primary rounded-pill px-4 py-2">
+				Retour à la liste d'amis
+			</a>
 		</div>
 	</div>
 {% endblock %}
