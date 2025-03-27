@@ -1,6 +1,3 @@
 artprima_prometheus_metrics:
-    namespace: symfony
-    storage: in_memory
-    ignored_routes:
-    - "/some/route/to/ignore"
-    - "/another/route"
+    namespace: my_app
+    type: in_memory
