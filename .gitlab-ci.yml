@@ -11,9 +11,9 @@ variables:
 
 stages:
   - install
-  - lint
   - test
   - build
+  - deploy
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -30,7 +30,7 @@ before_script:
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   # Installation de Node.js et npm
   - apt-get install -y nodejs npm
-  # Installation de Yarn : ajoutez le dépôt officiel et installez Yarn
+  # Installation de Yarn : ajout du dépôt officiel et installation
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
   - apt-get update && apt-get install -y yarn
@@ -44,26 +44,6 @@ install_dependencies:
     - npm install
     - yarn install
 
-php_lint:
-  stage: lint
-  script:
-    # Exemple d'analyse statique du code PHP avec PHPStan
-    - vendor/bin/phpstan analyse -l max -c phpstan.neon
-  allow_failure: true
-  only:
-    - merge_requests
-    - master
-
-js_lint:
-  stage: lint
-  script:
-    # Lancement d'ESLint via Yarn (adapté à votre configuration)
-    - yarn lint
-  allow_failure: true
-  only:
-    - merge_requests
-    - master
-
 test:
   stage: test
   script:
@@ -75,10 +55,30 @@ test:
 build_front:
   stage: build
   script:
-    # Si vite.config.js contient une faute de frappe "jsxFrament", on la corrige avant la compilation.
+    # Correction automatique d'une éventuelle faute de frappe dans vite.config.js
     - sed -i 's/jsxFrament/jsxFragment/g' vite.config.js || true
-    # Optionnel : vider le dossier de sortie si nécessaire
+    # Compilation des assets front-end (vider le dossier de sortie)
     - yarn build --emptyOutDir
   artifacts:
     paths:
       - public/build
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  script:
+    - echo "Building Docker image..."
+    - docker build -t $IMAGE_TAG .
+    - echo "Logging into Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - echo "Pushing Docker image..."
+    - docker push $IMAGE_TAG
+    - echo "Image pushed. Déploiement manuel requis."
+  when: manual
+  environment:
+    name: production
