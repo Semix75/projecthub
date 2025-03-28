@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="chat-app"
+         data-conversation-id="{{ conversation.id }}"
+         data-jwt-token="{{ jwt_token }}">
+    </div>
+
+    {{ encore_entry_script_tags('chat') }}
+{% endblock %}

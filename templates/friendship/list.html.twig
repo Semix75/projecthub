@@ -1,57 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste de mes amis{% endblock %}
+{% block title %}Liste de mes amis
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">👥 Mes amis</h1>
+	<div class="container mt-5">
+		<h1 class="text-center mb-4">Mes amis</h1>
 
-    <!-- Boutons d'actions -->
-    <div class="d-flex justify-content-center gap-3 mb-4">
-        <a href="{{ path('app_add_friend') }}" class="btn btn-primary">
-            ➕ Ajouter un ami
-        </a>
-        <a href="{{ path('app_list_block_friend') }}" class="btn btn-danger">
-            🚫 Voir la liste des bloqués
-        </a>
-        <a href="{{ path('app_friend_requests') }}" class="btn btn-success">
-            📩 Voir les demandes d'amis
-        </a>
-    </div>
+		<!-- Boutons d'actions -->
+		<div class="d-flex justify-content-center gap-3 mb-4">
+			<a href="{{ path('app_add_friend') }}" class="btn btn-outline-primary rounded-pill px-4 py-2">
+				Ajouter un ami
+			</a>
+			<a href="{{ path('app_list_block_friend') }}" class="btn btn-outline-danger rounded-pill px-4 py-2">
+				Voir la liste des bloqués
+			</a>
+			<a href="{{ path('app_friend_requests') }}" class="btn btn-outline-success rounded-pill px-4 py-2">
+				Voir les demandes d'amis
+			</a>
+		</div>
 
-    <!-- Liste des amis -->
-    <div class="card shadow-sm">
-        <div class="card-body">
-            {% if friends is empty %}
-                <p class="text-center text-muted">Vous n'avez aucun ami.</p>
-            {% else %}
-                <ul class="list-group">
-                    {% for friendship in friends %}
-                        {% if friendship.requester.id != app.user.id %}
-                            {% set friend = friendship.requester %}
-                        {% else %}    
-                            {% set friend = friendship.receiver %}
-                        {% endif %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/40" alt="Avatar" class="rounded-circle me-2">
-                                <a href="{{ path('app_user_profile', {'id': friend.id}) }}" class="text-decoration-none">
-                                    {{ friend.username }}
-                                </a>
-                            </div>
-                            <a href="{{ path('app_user_profile', {'id': friend.id}) }}" class="btn btn-outline-primary btn-sm">
-                                🔍 Voir le profil
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    </div>
+		<!-- Liste des amis -->
+		<div class="card shadow-sm border-0 mb-4 mx-auto" style="max-width: 800px;">
+			<div class="card-body">
+				{% if friends is empty %}
+					<p class="text-center text-muted">Vous n'avez aucun ami.</p>
+				{% else %}
+					<ul class="list-group">
+						{% for friendship in friends %}
+							{% if friendship.requester.id != app.user.id %}
+								{% set friend = friendship.requester %}
+							{% else %}
+								{% set friend = friendship.receiver %}
+							{% endif %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<div
+									class="d-flex align-items-center">
+									{# Affichage de la photo de profil de l'ami #}
+									{% if friend.profilePicture %}
+										<img src="{{ asset('uploads/profile_pictures/' ~ friend.profilePicture) }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+									{% else %}
+										<img src="{{ asset('assets/img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+									{% endif %}
+									<a href="{{ path('app_user_profile', {'id': friend.id}) }}" class="text-decoration-none">
+										{{ friend.username }}
+									</a>
+								</div>
+								<a href="{{ path('app_user_profile', {'id': friend.id}) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1">
+									Voir le profil
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
 
-    <!-- Bouton retour -->
-    <div class="text-center mt-4">
-        <a href="{{ path('home') }}" class="btn btn-outline-primary">🏠 Retour à l'accueil</a>
-    </div>
-</div>
+	</div>
 {% endblock %}

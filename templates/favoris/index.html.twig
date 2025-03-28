@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Mes Favoris</h1>
+
+    <div class="row">
+        {% for favori in favoris %}
+            <div class="col-md-4 mb-4" id="favori-{{ favori.id }}">
+                <div class="card shadow-lg border-light">
+                    <div class="card-body text-primary">
+                        <h5 class="card-titl">{{ favori.projet.intitule }}</h5>
+                        <p class="card-text ">{{ favori.projet.description[:100] }}...</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('projet_detail', { id: favori.projet.id }) }}" class="btn btn-outline-primary rounded-pill px-4 py-2">Voir Détails</a>
+                            <button class="btn btn-outline-danger rounded-pill px-4 py-2 btn-remove-favori" data-id="{{ favori.id }}">Retirer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p class="text-center text-muted mt-4">Vous n'avez aucun favori.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.btn-remove-favori').forEach(button => {
+        button.addEventListener('click', function () {
+            let favoriId = this.dataset.id;
+
+            fetch('/favoris/remove/' + favoriId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'removed') {
+                    location.reload(); 
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+</script>
+
+{% endblock %}

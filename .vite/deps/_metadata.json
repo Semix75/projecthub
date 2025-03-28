@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "hash": "48df5e6f",
   "configHash": "1710b2a7",
   "lockfileHash": "e324987b",
@@ -22,4 +23,12 @@
       "file": "chunk-UIKJLZCJ.js"
     }
   }
+=======
+  "hash": "f757dc44",
+  "configHash": "0cfbe545",
+  "lockfileHash": "e324987b",
+  "browserHash": "4b56b7ec",
+  "optimized": {},
+  "chunks": {}
+>>>>>>> webpack2
 }

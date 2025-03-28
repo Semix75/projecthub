@@ -1,0 +1,167 @@
+🔹 Objectifs :
+Chat privé : Permettre à deux utilisateurs de discuter en temps réel.
+Chat de groupe : Une conversation regroupant plusieurs utilisateurs (ex: les membres d'un groupe de projet).
+Intégration de Mercure : Diffuser les messages en temps réel via Mercure.
+Utilisation de Preact avec ViteJS : Créer l'interface utilisateur du chat en frontend.
+Création automatique des conversations de groupe : Lorsqu'un groupe est généré, une conversation est créée avec les membres du groupe.
+✅ Étape 1 : Structurer le backend pour les conversations et les messages
+📌 Analyse de la base existante
+Tu as déjà une table Message et Conversation, ce qui est parfait. Il faut s'assurer qu'elles sont bien structurées :
+Une conversation peut être entre 2 utilisateurs (type=private) ou un groupe (type=group).
+Un message est lié à une conversation et envoyé par un utilisateur.
+📌 Ajout de Mercure pour le temps réel
+Mercure est déjà installé via Docker, parfait.
+Il faut publier les messages en temps réel lorsqu'un utilisateur envoie un message.
+✅ Étape 2 : API et Gestion des Conversations
+🔹 Pourquoi une API est utile ?
+Une API permet de :
+
+Récupérer les conversations et les messages associés.
+Créer une conversation entre deux utilisateurs ou un groupe.
+Envoyer un message et le diffuser en temps réel via Mercure.
+🔹 Routes API nécessaires :
+GET /api/conversations → Récupérer les conversations d'un utilisateur.
+GET /api/conversations/{id} → Récupérer les messages d'une conversation.
+POST /api/conversations → Créer une conversation.
+POST /api/messages → Envoyer un message.
+✅ Étape 3 : Intégration de Preact pour l'interface du chat
+🔹 Composants à créer avec Preact
+Liste des conversations (ConversationList.jsx)
+Vue de la conversation (ChatWindow.jsx)
+Champ de saisie (MessageInput.jsx)
+Mise à jour en temps réel avec Mercure (via un useEffect en Preact qui écoute Mercure)
+✅ Étape 4 : Automatiser la création des conversations de groupe
+Lorsqu'un groupe est créé, une conversation associée au groupe est créée automatiquement.
+Tous les membres du groupe sont ajoutés à cette conversation.
+🚀 Proposition d’implémentation étape par étape
+1️⃣ (Backend)
+
+Vérifier la structure des tables Message et Conversation.
+Créer l'API REST pour gérer les conversations et messages.
+Intégrer Mercure pour diffuser les messages en temps réel.
+2️⃣ (Frontend - Preact)
+
+Créer les composants du chat (liste des conversations, affichage des messages, envoi de message).
+Ajouter un écouteur Mercure pour actualiser le chat en temps réel.
+Gérer la navigation entre conversations privées et de groupe.
+3️⃣ (Automatisation des conversations de groupe)
+
+Modifier la gestion des groupes pour créer automatiquement une conversation.
+Associer tous les membres d’un groupe à la conversation.
+🔥 Conclusion
+Avec ce plan, on peut commencer étape par étape et avancer proprement.
+
+➡️ Que veux-tu faire en premier ?
+1️⃣ Configurer le backend (API, DB, Mercure)
+2️⃣ Créer le frontend du chat (Preact, WebSocket Mercure)
+3️⃣ Automatiser les conversations de groupe
+
+💡 Je recommande de commencer par l’API Backend, puis d'ajouter le temps réel avec Mercure, et enfin de faire le frontend avec Preact.
+
+
+
+
+
+commencons par ce que tu pense etre la premiere chose a faire et faisons ca etapes par etapes pour bien que tu m'explique bien et que je comprenne 
+
+
+
+
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@exemple.com", "password": "azerty"}'
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+const ChatView = ({ conversationId, token }) => {
+    const [messages, setMessages] = useState([]);
+    const [content, setContent] = useState('');
+    const [user, setUser] = useState(null);
+
+    // Récupère l'utilisateur courant
+    useEffect(() => {
+        fetch('/api/me', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(err => console.error('Erreur récupération user', err));
+    }, [token]);
+
+    // Récupère les messages de la conversation
+    useEffect(() => {
+        fetch(`/api/conversations/${conversationId}/messages`)
+          .then(res => res.json())
+          .then(data => setMessages(data))
+          .catch(err => console.error(err));
+      }, [conversationId]);
+    // Abonnement à Mercure
+    useEffect(() => {
+        const url = new URL('http://localhost:3000/.well-known/mercure');
+        url.searchParams.append('topic', `/conversations/${conversationId}`);
+
+        const eventSource = new EventSource(url, { withCredentials: true });
+
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setMessages((prevMessages) => [...prevMessages, data]);
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, [conversationId]);
+
+    // Envoi du message
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!content.trim()) return;
+
+        await fetch('/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                content,
+                conversation: `/api/conversations/${conversationId}`,
+            }),
+        });
+
+        setContent('');
+    };
+
+    return (
+        <div>
+            <h2>Conversation #{conversationId}</h2>
+            <ul>
+                {messages.map((msg) => (
+                    <li key={msg.id}>
+                        <strong>{msg.sendBy?.username}:</strong> {msg.content}
+                    </li>
+                ))}
+            </ul>
+
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Votre message..."
+                />
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    );
+};
+
+export default ChatView;

@@ -7,5 +7,5 @@
             "/*": ["assets/*"]
         }
     },
-    "exclude": ["node_modules", "public/assets"]
+    "exclude": ["node_modules", "assets/assets"]
 }

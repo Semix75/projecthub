@@ -6,34 +6,51 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['message:read']],
+    denormalizationContext: ['groups' => ['message:write']]
+)]
 class Message
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['message:read'])]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    
+    #[ORM\Column(nullable: true)]
+    #[Groups(['message:read', 'message:write'])]
     private ?string $content = null;
+    
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['message:read'])]
     private ?\DateTimeInterface $sendAt = null;
+    
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['message:read'])]
     private ?bool $isRead = null;
+    
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column( type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['message:read'])]
     private ?\DateTimeImmutable $readAt = null;
-
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
+   
+    
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(['message:read', 'message:write'])]
     private ?User $sendBy = null;
+    
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(targetEntity: Conversation::class)]
+    #[Groups(['message:read', 'message:write'])]
     private ?Conversation $conversation = null;
+    
 
     public function getId(): ?int
     {

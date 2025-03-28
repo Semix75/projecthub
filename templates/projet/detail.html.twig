@@ -3,12 +3,72 @@
 {% block title %}{{ projet.intitule }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>{{ projet.intitule }}</h1>
+	<div class="container mt-5 d-flex justify-content-center">
+		<div class="card shadow-lg rounded-3" style="max-width: 800px; width: 60vh; min-height: 400px;">
+			<div class="card-body d-flex flex-column text-center">
+				<h1 class="card-title mb-4">{{ projet.intitule }}</h1>
 
-    <p><strong>Description :</strong> {{ projet.description }}</p>
-    {# <p><strong>Places disponibles :</strong> {{ projet.nbPlace }}</p> #}
+				<p class="card-text">
+					<strong>Description :</strong> {{ projet.description }}
+				</p>
+				<p class="card-text">
+					<strong>Nombre de places :</strong> {{ projet.nbPlaceMax }}
+				</p>
 
-    <a href="{{ path('projets_index') }}" class="btn btn-secondary">Retour à la liste</a>
-</div>
+				<h2 class="mt-4">Groupes associés</h2>
+				<ul class="list-group list-group-flush">
+					{% for groupe in groupes %}
+						<li class="list-group-item text-primary">{{ groupe.nom }}</li>
+					{% else %}
+						<li class="list-group-item text-muted">Aucun groupe associé</li>
+					{% endfor %}
+				</ul>
+
+				<!-- Ajout de margin-top:auto pour placer les boutons en bas -->
+				<div class="d-flex justify-content-center gap-3 mt-auto">
+					<a href="{{ path('projets_index') }}" class="btn btn-outline-primary rounded-pill btn-sm">
+						Retour à la liste
+					</a>
+					<button 
+						class="btn {% if projet in favoris %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill btn-sm toggle-favoris"
+						data-id="{{ projet.id }}"
+					>
+						{% if projet in favoris %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			document.querySelectorAll('.toggle-favoris').forEach(button => {
+				button.addEventListener('click', function () {
+					let projetId = this.dataset.id;
+					let button = this;
+
+					fetch(`/favoris/toggle/${projetId}`, {
+						method: 'POST',
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest',
+							'Content-Type': 'application/json'
+						}
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.status === 'added') {
+							button.classList.remove('btn-outline-danger');
+							button.classList.add('btn-danger');
+							button.textContent = 'Retirer des favoris';
+						} else {
+							button.classList.remove('btn-danger');
+							button.classList.add('btn-outline-danger');
+							button.textContent = 'Ajouter aux favoris';
+						}
+					})
+					.catch(error => console.error('Erreur:', error));
+				});
+			});
+		});
+	</script>
 {% endblock %}

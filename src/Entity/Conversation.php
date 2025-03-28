@@ -7,36 +7,46 @@ use App\Repository\ConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\DBAL\Types\Types;
+
 
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['conversation:read']],
+    denormalizationContext: ['groups' => ['conversation:write']]
+)]
 class Conversation
 {
+    #[Groups(['conversation:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column( length: 255, nullable: true)]
+    #[Groups(['conversation:read', 'conversation:write'])]
     private ?string $title = null;
+    
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column( type: Types::DATETIME_IMMUTABLE,nullable: true)]
+    #[Groups(['conversation:read'])]
     private ?\DateTimeImmutable $createdAt = null;
+    
 
-    #[ORM\ManyToOne(inversedBy: 'conversations')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(['conversation:read'])]
     private ?User $createdBy = null;
-
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'conversationParticipants')]
+    
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[Groups(['conversation:read', 'conversation:write'])]
     private Collection $participants;
 
-    /**
-     * @var Collection<int, Message>
-     */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation')]
+    #[ORM\OneToMany(mappedBy: 'conversation', targetEntity: Message::class, cascade: ['persist', 'remove'])]
+    #[Groups(['conversation:read', 'conversation:write'])]
     private Collection $messages;
+
 
     public function __construct()
     {
@@ -106,36 +116,6 @@ class Conversation
     public function removeParticipant(User $participant): static
     {
         $this->participants->removeElement($participant);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Message>
-     */
-    public function getMessages(): Collection
-    {
-        return $this->messages;
-    }
-
-    public function addMessage(Message $message): static
-    {
-        if (!$this->messages->contains($message)) {
-            $this->messages->add($message);
-            $message->setConversation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMessage(Message $message): static
-    {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getConversation() === $this) {
-                $message->setConversation(null);
-            }
-        }
 
         return $this;
     }

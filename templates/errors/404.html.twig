@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page introuvable - ProjectHub{% endblock %}
+
+{% block body %}
+    <header class="masthead text-center text-white" style="padding-top: 8rem; padding-bottom: 8rem; background-color: #343a40;">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Oups !</h1>
+            <p class="lead fs-4">La page que vous recherchez est introuvable.</p>
+            <a href="{{ path('app_home_page') }}" class="btn btn-outline-light rounded-pill px-4 py-2 btn-lg">Retour à l'accueil</a>
+        </div>
+    </header>
+
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Voici quelques suggestions :</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">🏠 Retour à l'accueil</h5>
+                            <p class="card-text">Découvrez les projets disponibles.</p>
+                            <a href="{{ path('app_home_page') }}" class="btn btn-outline-primary rounded-pill px-4">Accueil</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">📧 Contactez-nous</h5>
+                            <p class="card-text">Besoin d'aide ? Contactez l'équipe ProjectHub.</p>
+                            <a href="{{ path('app_contact') }}" class="btn btn-outline-primary rounded-pill px-4">Contact</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
