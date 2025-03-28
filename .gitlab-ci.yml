@@ -1,0 +1,46 @@
+image: php:8.1
+
+services:
+  - mysql:5.7
+
+variables:
+  # Configuration de la base de données pour l'environnement de test
+  MYSQL_DATABASE: projecthub_test
+  MYSQL_ROOT_PASSWORD: root
+  DATABASE_URL: "mysql://root:root@mysql:3306/projecthub_test"
+  NODE_ENV: development
+
+stages:
+  - install
+  - test
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+    - node_modules/
+
+before_script:
+  # Mise à jour et installation des dépendances système
+  - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev
+  # Installation des extensions PHP nécessaires
+  - docker-php-ext-install pdo pdo_mysql intl zip
+  # Installation de Composer
+  - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+install_dependencies:
+  stage: install
+  script:
+    # Installation des dépendances PHP
+    - composer install --prefer-dist --no-interaction --optimize-autoloader
+    # Installation des dépendances Node.js
+    - npm install
+    - yarn install
+
+test:
+  stage: test
+  script:
+    # Met à jour le schéma de la base de test
+    - php bin/console doctrine:schema:update --force --env=test
+    # Exécute l'ensemble des tests PHPUnit
+    - vendor/bin/phpunit
