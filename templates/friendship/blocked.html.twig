@@ -25,7 +25,7 @@
 										{% if friendship.requester.profilePicture %}
 											<img src="{{ asset('uploads/profile_pictures/' ~ friendship.requester.profilePicture) }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
 										{% else %}
-											<img src="{{ asset('img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+											<img src="{{ asset('assets/img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
 										{% endif %}
 										{{ friendship.requester.id == app.user.id ? friendship.receiver.username : friendship.requester.username }}
 										<form action="{{ path('app_unblock_friend', {id: friendship.id}) }}" method="post">

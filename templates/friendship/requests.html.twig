@@ -22,7 +22,7 @@
 										{% if request.requester.profilePicture %}
 											<img src="{{ asset('uploads/profile_pictures/' ~ request.requester.profilePicture) }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Photo de profil">
 										{% else %}
-											<img src="{{ asset('img/default-profile.png') }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Photo de profil">
+											<img src="{{ asset('assets/img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
 										{% endif %}
 										<span>{{ request.requester.email }}</span>
 									</div>

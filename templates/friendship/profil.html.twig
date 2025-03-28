@@ -18,8 +18,9 @@
 						{% if user.profilePicture %}
 							<img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;" alt="Photo de profil">
 						{% else %}
-							<img src="{{ asset('img/default-profile.png') }}" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;" alt="Photo par défaut">
+							<img src="{{ asset('assets/img/default-profile.png') }}" alt="Photo de profil" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
 						{% endif %}
+
 					</div>
 
 					<ul class="list-group list-group-flush">
