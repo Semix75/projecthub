@@ -10,7 +10,7 @@
         {% for favori in favoris %}
             <div class="col-md-4 mb-4" id="favori-{{ favori.id }}">
                 <div class="card shadow-lg border-light">
-                    <div class="card-body">
+                    <div class="card-body text-primary">
                         <h5 class="card-titl">{{ favori.projet.intitule }}</h5>
                         <p class="card-text ">{{ favori.projet.description[:100] }}...</p>
                         <div class="d-flex justify-content-between">

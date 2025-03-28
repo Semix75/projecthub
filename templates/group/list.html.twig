@@ -20,12 +20,12 @@
 				<p class="text-muted text-center">Vous n'êtes dans aucun groupe.</p>
 			{% else %}
 				<div class="card shadow-lg" style="max-width: 550px; border-radius: 20px;">
-					<div class="card-body">
+					<div class="card-body ">
 						{% for group in userGroups %}
-							<div class="mb-5">
+							<div class="mb-5 text-primary">
 								<h3>{{ group.nom }}</h3>
 								<p>
-									<strong>Projet :</strong>
+									<strong class="text-primary">Projet :</strong>
 									{{ group.projet.intitule }}</p>
 
 								<h4 class="h6 text-muted">Membres :</h4>
@@ -57,10 +57,10 @@
 				<div class="card shadow-lg" style="max-width: 550px; border-radius: 20px;">
 					<div class="card-body">
 						{% for group in allGroups %}
-							<div class="mb-5">
+							<div class="mb-5 text-primary">
 								<h3>{{ group.nom }}</h3>
 								<p>
-									<strong>Projet :</strong>
+									<strong class="text-primary">Projet :</strong>
 									{{ group.projet.intitule }}</p>
 
 								<h4 class="h6 text-muted">Membres :</h4>
