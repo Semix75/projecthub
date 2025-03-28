@@ -34,7 +34,6 @@ class ConversationTest extends TestCase
 
     public function testParticipantsManagement()
     {
-        $this->markTestSkipped('Test ignoré temporairement.');
 
         $conversation = new Conversation();
         $user1 = new User();
