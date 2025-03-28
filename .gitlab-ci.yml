@@ -30,7 +30,7 @@ before_script:
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   # Installation de Node.js et npm
   - apt-get install -y nodejs npm
-  # Installation de Yarn via le dépôt officiel
+  # Installation de Yarn : ajoutez le dépôt officiel et installez Yarn
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
   - apt-get update && apt-get install -y yarn
@@ -47,7 +47,7 @@ install_dependencies:
 php_lint:
   stage: lint
   script:
-    # Analyse statique du code PHP avec PHPStan
+    # Exemple d'analyse statique du code PHP avec PHPStan
     - vendor/bin/phpstan analyse -l max -c phpstan.neon
   allow_failure: true
   only:
@@ -57,7 +57,7 @@ php_lint:
 js_lint:
   stage: lint
   script:
-    # Analyse du code JavaScript avec ESLint
+    # Lancement d'ESLint via Yarn (adapté à votre configuration)
     - yarn lint
   allow_failure: true
   only:
@@ -69,14 +69,16 @@ test:
   script:
     # Met à jour le schéma de la base de test
     - php bin/console doctrine:schema:update --force --env=test
-    # Lance l'ensemble des tests PHPUnit
+    # Exécute les tests PHPUnit
     - vendor/bin/phpunit
 
 build_front:
   stage: build
   script:
-    # Compilation des assets front-end via Yarn (adapté à votre configuration)
-    - yarn build
+    # Si vite.config.js contient une faute de frappe "jsxFrament", on la corrige avant la compilation.
+    - sed -i 's/jsxFrament/jsxFragment/g' vite.config.js || true
+    # Optionnel : vider le dossier de sortie si nécessaire
+    - yarn build --emptyOutDir
   artifacts:
     paths:
       - public/build
