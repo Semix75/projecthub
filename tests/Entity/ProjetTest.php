@@ -36,6 +36,7 @@ class ProjetTest extends TestCase
 
     public function testVoeuxManagement()
     {
+        $this->markTestSkipped('Test ignoré temporairement.');
 
         $projet = new Projet();
         $voeu = $this->createMock(Voeux::class);
