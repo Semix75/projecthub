@@ -1,19 +1,14 @@
 image: php:8.2
 
-services:
-  - mysql:5.7
-
 variables:
-  MYSQL_DATABASE: projecthub_test
-  MYSQL_ROOT_PASSWORD: root
-  DATABASE_URL: "mysql://root:root@mysql:3306/projecthub_test"
+  # Utilisation de SQLite pour l'environnement de test
+  DATABASE_URL: "sqlite:///%kernel.project_dir%/var/projecthub_test.db"
   NODE_ENV: development
 
 stages:
   - install
   - test
   - build
-  - deploy
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -24,8 +19,8 @@ cache:
 before_script:
   # Mise à jour et installation des dépendances système (incluant gnupg pour apt-key)
   - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev gnupg curl
-  # Installation des extensions PHP nécessaires
-  - docker-php-ext-install pdo pdo_mysql intl zip
+  # Installation des extensions PHP nécessaires (on installe pdo_sqlite pour SQLite)
+  - docker-php-ext-install pdo pdo_sqlite intl zip
   # Installation de Composer
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   # Installation de Node.js et npm
@@ -47,15 +42,15 @@ install_dependencies:
 test:
   stage: test
   script:
-    # Met à jour le schéma de la base de test
+    # Met à jour le schéma de la base de test (SQLite)
     - php bin/console doctrine:schema:update --force --env=test
-    # Exécute les tests PHPUnit
+    # Exécute l'ensemble des tests PHPUnit
     - vendor/bin/phpunit
 
 build_front:
   stage: build
   script:
-    # Correction automatique d'une éventuelle faute de frappe dans vite.config.js
+    # Correction automatique d'une faute de frappe éventuelle dans vite.config.js
     - sed -i 's/jsxFrament/jsxFragment/g' vite.config.js || true
     # Compilation des assets front-end (vider le dossier de sortie)
     - yarn build --emptyOutDir
