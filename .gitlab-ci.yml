@@ -9,6 +9,7 @@ stages:
   - install
   - test
   - build
+  - deploy
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -17,9 +18,9 @@ cache:
     - node_modules/
 
 before_script:
-  # Mise à jour et installation des dépendances système (incluant gnupg pour apt-key)
-  - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev gnupg curl
-  # Installation des extensions PHP nécessaires (on installe pdo_sqlite pour SQLite)
+  # Mise à jour et installation des dépendances système (incluant gnupg et libsqlite3-dev)
+  - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev gnupg curl libsqlite3-dev
+  # Installation des extensions PHP nécessaires (pdo, pdo_sqlite, intl, zip)
   - docker-php-ext-install pdo pdo_sqlite intl zip
   # Installation de Composer
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -50,10 +51,30 @@ test:
 build_front:
   stage: build
   script:
-    # Correction automatique d'une faute de frappe éventuelle dans vite.config.js
+    # Correction automatique d'une éventuelle faute de frappe dans vite.config.js
     - sed -i 's/jsxFrament/jsxFragment/g' vite.config.js || true
     # Compilation des assets front-end (vider le dossier de sortie)
     - yarn build --emptyOutDir
   artifacts:
     paths:
       - public/build
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  script:
+    - echo "Building Docker image..."
+    - docker build -t $IMAGE_TAG .
+    - echo "Logging into Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - echo "Pushing Docker image..."
+    - docker push $IMAGE_TAG
+    - echo "Déploiement: l'image a été poussée. Déployez manuellement via votre outil habituel."
+  when: manual
+  environment:
+    name: production
