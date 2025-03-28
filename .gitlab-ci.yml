@@ -4,7 +4,6 @@ services:
   - mysql:5.7
 
 variables:
-  # Configuration de la base de données pour l'environnement de test
   MYSQL_DATABASE: projecthub_test
   MYSQL_ROOT_PASSWORD: root
   DATABASE_URL: "mysql://root:root@mysql:3306/projecthub_test"
@@ -21,8 +20,8 @@ cache:
     - node_modules/
 
 before_script:
-  # Mise à jour et installation des dépendances système
-  - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev
+  # Mise à jour et installation des dépendances système incluant Node.js et npm
+  - apt-get update && apt-get install -y unzip git libicu-dev libxml2-dev libzip-dev nodejs npm
   # Installation des extensions PHP nécessaires
   - docker-php-ext-install pdo pdo_mysql intl zip
   # Installation de Composer
