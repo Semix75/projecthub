@@ -1,0 +1,25 @@
+{
+  "hash": "48df5e6f",
+  "configHash": "1710b2a7",
+  "lockfileHash": "e324987b",
+  "browserHash": "d371bb38",
+  "optimized": {
+    "preact/compat": {
+      "src": "../../node_modules/preact/compat/dist/compat.module.js",
+      "file": "preact_compat.js",
+      "fileHash": "5fc98cbd",
+      "needsInterop": false
+    },
+    "preact/hooks": {
+      "src": "../../node_modules/preact/hooks/dist/hooks.module.js",
+      "file": "preact_hooks.js",
+      "fileHash": "777be161",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-UIKJLZCJ": {
+      "file": "chunk-UIKJLZCJ.js"
+    }
+  }
+}
