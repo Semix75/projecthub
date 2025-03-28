@@ -20,7 +20,7 @@ class VoeuxAttributionService
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
         $users = array_filter($users, fn(User $u) => $u->getRoles() === ['ROLE_USER']);
-
+        shuffle($users);
         $projets = $this->entityManager->getRepository(Projet::class)->findAll();
         $voeux = $this->entityManager->getRepository(Voeux::class)->findAll();
 
