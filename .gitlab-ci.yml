@@ -58,23 +58,3 @@ build_front:
   artifacts:
     paths:
       - public/build
-
-deploy:
-  stage: deploy
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
-    IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-  script:
-    - echo "Building Docker image..."
-    - docker build -t $IMAGE_TAG .
-    - echo "Logging into Docker registry..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - echo "Pushing Docker image..."
-    - docker push $IMAGE_TAG
-    - echo "Déploiement: l'image a été poussée. Déployez manuellement via votre outil habituel."
-  when: manual
-  environment:
-    name: production
